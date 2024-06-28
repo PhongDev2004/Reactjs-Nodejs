@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import Button from "src/components/ui/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
 const CategoriesList = () => {
   return (
@@ -36,7 +38,23 @@ const CategoriesList = () => {
                 </th>
               </tr>
             </thead>
-            <tbody id="table-category-list"></tbody>
+            <tbody id="table-category-list">
+              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                <td className="px-6 py-4">id</td>
+                <td className="px-6 py-4">name</td>
+                <td className="px-6 py-4 flex flex-nowrap space-x-4">
+                  <button
+                    className="font-medium text-blue-600 dark:text-blue-500"
+                    bg-red-500
+                  >
+                    <EditIcon className="edit-category-btn text-lg w-full" />
+                  </button>
+                  <button className="font-medium text-red-600 dark:text-red-500">
+                    <DeleteIcon className="edit-category-btn text-lg w-full" />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
