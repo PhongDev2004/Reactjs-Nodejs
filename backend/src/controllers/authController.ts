@@ -4,7 +4,6 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import catchAsync from '../Utils/catchAsync';
 import User from '../models/User';
 import bcrypt from 'bcryptjs';
-import AppError from '../Utils/appError';
 import { loginValidation, registerValidation } from '../validations/auth';
 
 const signToken = (id: string) => {
@@ -38,13 +37,13 @@ export const register = catchAsync(async (req, res, next) => {
 	const { error } = registerValidation.validate(req.body);
 
 	if (error) {
-		return next(new AppError(error.details[0].message, 400));
+		return res.status(400).json({ error: error.details[0].message });
 	}
 
 	const existUser = await User.findOne({ email: req.body.email });
 
 	if (existUser) {
-		return next(new AppError('User already exists', 400));
+		return res.status(400).json({ error: 'Email already exists' });
 	}
 
 	const hashedPassword = await bcrypt.hash(req.body.password, 12);
@@ -66,19 +65,19 @@ export const login = catchAsync(
 		const { error } = loginValidation.validate(req.body);
 
 		if (error) {
-			return next(new AppError(error.details[0].message, 400));
+			return res.status(400).json({ error: error.details[0].message });
 		}
 
 		const user = await User.findOne({ email }).select('+password');
 
 		if (!user) {
-			return next(new AppError('Incorrect email or password', 401));
+			return res.status(400).json({ error: 'Invalid email or password' });
 		}
 
 		const isMatch = await bcrypt.compare(password, user.password);
 
 		if (!isMatch) {
-			return next(new AppError('Incorrect email or password', 401));
+			return res.status(400).json({ error: 'Invalid email or password' });
 		}
 
 		createSendToken(user, 200, res);
@@ -102,7 +101,7 @@ declare global {
 }
 
 export const protect = catchAsync(
-	async (req: Request, _res: Response, next: NextFunction) => {
+	async (req: Request, res: Response, next: NextFunction) => {
 		let token;
 
 		if (
@@ -115,7 +114,7 @@ export const protect = catchAsync(
 		}
 
 		if (!token) {
-			return next(new AppError('You are not logged in', 401));
+			return res.status(401).json({ error: 'You are not logged in' });
 		}
 
 		const decoded: JwtPayload = jwt.verify(
@@ -126,12 +125,7 @@ export const protect = catchAsync(
 		const currentUser = await User.findById(decoded.id);
 
 		if (!currentUser) {
-			return next(
-				new AppError(
-					'The user belonging to this token does no longer exist.',
-					401
-				)
-			);
+			return res.status(401).json({ error: 'The user does not exist' });
 		}
 
 		req.user = currentUser;
@@ -168,14 +162,9 @@ export const isLoggedIn = async (
 };
 
 export const restrictTo = (...roles: string[]) => {
-	return (req: Request, _res: Response, next: NextFunction) => {
+	return (req: Request, res: Response, next: NextFunction) => {
 		if (!roles.includes(req.user.role)) {
-			return next(
-				new AppError(
-					'You do not have permission to perform this action',
-					403
-				)
-			);
+			return res.status(403).json({ error: 'You do not have permission' });
 		}
 
 		next();
