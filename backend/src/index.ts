@@ -1,16 +1,31 @@
 import express from 'express';
 import cors from 'cors';
-import { PORT } from './Utils/env';
+import {
+	CLOUDINARY_API_KEY,
+	CLOUDINARY_API_SECRET,
+	CLOUDINARY_CLOUD_NAME,
+	PORT,
+} from './Utils/env';
 import connectDB from './Utils/connect';
 import cookieParser from 'cookie-parser';
 import userRouter from './routes/userRoutes';
+import productRouter from './routes/productRoutes';
+import { v2 as cloudinary } from 'cloudinary';
+
+cloudinary.config({
+	cloud_name: CLOUDINARY_CLOUD_NAME,
+	api_key: CLOUDINARY_API_KEY,
+	api_secret: CLOUDINARY_API_SECRET,
+});
 
 const app = express();
+
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
 app.use('/api/auth', userRouter);
+app.use('/api/products', productRouter);
 
 app.listen(PORT, (): void => {
 	connectDB();

@@ -1,6 +1,6 @@
-import { Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { JWT_SECRET } from '../Utils/env';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import catchAsync from '../Utils/catchAsync';
 import User from '../models/User';
 import bcrypt from 'bcryptjs';
@@ -59,29 +59,31 @@ export const register = catchAsync(async (req, res, next) => {
 	createSendToken(newUser, 201, res);
 });
 
-export const login = catchAsync(async (req, res, next) => {
-	const { email, password } = req.body;
+export const login = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const { email, password } = req.body;
 
-	const { error } = loginValidation.validate(req.body);
+		const { error } = loginValidation.validate(req.body);
 
-	if (error) {
-		return next(new AppError(error.details[0].message, 400));
+		if (error) {
+			return next(new AppError(error.details[0].message, 400));
+		}
+
+		const user = await User.findOne({ email }).select('+password');
+
+		if (!user) {
+			return next(new AppError('Incorrect email or password', 401));
+		}
+
+		const isMatch = await bcrypt.compare(password, user.password);
+
+		if (!isMatch) {
+			return next(new AppError('Incorrect email or password', 401));
+		}
+
+		createSendToken(user, 200, res);
 	}
-
-	const user = await User.findOne({ email }).select('+password');
-
-	if (!user) {
-		return next(new AppError('Incorrect email or password', 401));
-	}
-
-	const isMatch = await bcrypt.compare(password, user.password);
-
-	if (!isMatch) {
-		return next(new AppError('Incorrect email or password', 401));
-	}
-
-	createSendToken(user, 200, res);
-});
+);
 
 export const logout = (req: Request, res: Response) => {
 	res.cookie('jwt', 'loggedout', {
@@ -89,4 +91,93 @@ export const logout = (req: Request, res: Response) => {
 		httpOnly: true,
 	});
 	res.status(200).json({ status: 'success' });
+};
+
+declare global {
+	namespace Express {
+		interface Request {
+			user?: any;
+		}
+	}
+}
+
+export const protect = catchAsync(
+	async (req: Request, _res: Response, next: NextFunction) => {
+		let token;
+
+		if (
+			req.headers.authorization &&
+			req.headers.authorization.startsWith('Bearer')
+		) {
+			token = req.headers.authorization.split(' ')[1];
+		} else if (req.cookies.jwt) {
+			token = req.cookies.jwt;
+		}
+
+		if (!token) {
+			return next(new AppError('You are not logged in', 401));
+		}
+
+		const decoded: JwtPayload = jwt.verify(
+			token,
+			JWT_SECRET as string
+		) as JwtPayload;
+
+		const currentUser = await User.findById(decoded.id);
+
+		if (!currentUser) {
+			return next(
+				new AppError(
+					'The user belonging to this token does no longer exist.',
+					401
+				)
+			);
+		}
+
+		req.user = currentUser;
+		next();
+	}
+);
+
+export const isLoggedIn = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	if (req.cookies.jwt) {
+		try {
+			const decoded: JwtPayload = jwt.verify(
+				req.cookies.jwt,
+				JWT_SECRET as string
+			) as JwtPayload;
+
+			const currentUser = await User.findById(decoded.id);
+
+			if (!currentUser) {
+				return next();
+			}
+
+			req.user = currentUser;
+			return next();
+		} catch (err) {
+			return next();
+		}
+	}
+
+	next();
+};
+
+export const restrictTo = (...roles: string[]) => {
+	return (req: Request, _res: Response, next: NextFunction) => {
+		if (!roles.includes(req.user.role)) {
+			return next(
+				new AppError(
+					'You do not have permission to perform this action',
+					403
+				)
+			);
+		}
+
+		next();
+	};
 };

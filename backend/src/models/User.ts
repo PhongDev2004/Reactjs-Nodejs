@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			enum: ['male', 'female', 'other'],
 		},
-		avatar: {
+		image: {
 			type: String,
 			default: 'https://avatar.iran.liara.run/public',
 		},
