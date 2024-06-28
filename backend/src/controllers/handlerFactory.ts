@@ -21,6 +21,10 @@ export const deleteOne = <T extends Model<any>>(Model: T) =>
 
 export const updateOne = <T extends Model<any>>(Model: T) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+		if (req.file) {
+			req.body.image = await uploadImage(req.file as Express.Multer.File);
+		}
+
 		const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
 			new: true,
 		});
@@ -29,10 +33,6 @@ export const updateOne = <T extends Model<any>>(Model: T) =>
 			return res
 				.status(404)
 				.json({ message: 'No document found with that ID' });
-		}
-
-		if (req.file) {
-			req.body.image = await uploadImage(req.file);
 		}
 
 		return res.status(200).json({
@@ -46,7 +46,7 @@ export const updateOne = <T extends Model<any>>(Model: T) =>
 export const createOne = <T extends Model<any>>(Model: T) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		if (req.file) {
-			req.body.image = await uploadImage(req.file);
+			req.body.image = await uploadImage(req.file as Express.Multer.File);
 		}
 
 		const doc = await Model.create(req.body);
