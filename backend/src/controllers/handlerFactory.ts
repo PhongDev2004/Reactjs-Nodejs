@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import { Model } from 'mongoose';
 import catchAsync from '../Utils/catchAsync';
 import APIFeatures from '../Utils/apiFeatures';
-import AppError from '../Utils/appError';
 import cloudinary from 'cloudinary';
 
 export const deleteOne = <T extends Model<any>>(Model: T) =>
@@ -10,7 +9,9 @@ export const deleteOne = <T extends Model<any>>(Model: T) =>
 		const doc = await Model.findByIdAndDelete(req.params.id);
 
 		if (!doc) {
-			return next(new AppError('No document found with that ID', 404));
+			return res
+				.status(404)
+				.json({ message: 'No document found with that ID' });
 		}
 
 		return res
@@ -25,7 +26,9 @@ export const updateOne = <T extends Model<any>>(Model: T) =>
 		});
 
 		if (!doc) {
-			return next(new AppError('No document found with that ID', 404));
+			return res
+				.status(404)
+				.json({ message: 'No document found with that ID' });
 		}
 
 		if (req.file) {
@@ -67,7 +70,9 @@ export const getOne = <T extends Model<any>>(
 		const doc = await query;
 
 		if (!doc) {
-			return next(new AppError('No document found with that ID', 404));
+			return res
+				.status(404)
+				.json({ message: 'No document found with that ID' });
 		}
 
 		res.status(200).json({
