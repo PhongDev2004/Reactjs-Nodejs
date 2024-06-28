@@ -10,6 +10,10 @@ import CartProduct from "./components/CartProduct";
 import LayoutAdmin from "./components/layout/LayoutAdmin";
 import Dashboard from "./pages/admin/Dashboard";
 import NotFound from "./pages/NotFound";
+import ProductAdd from "./pages/admin/ProductAdd";
+import ProductEdit from "./pages/admin/ProductEdit";
+import CategoriesList from "./pages/admin/CategoriesList";
+import CategoriesAdd from "./pages/admin/CategoriesAdd";
 
 function App() {
   return (
@@ -24,6 +28,10 @@ function App() {
         </Route>
         <Route path="/admin" element={<LayoutAdmin />}>
           <Route index element={<Dashboard />} />
+          <Route path="/admin/product-add" element={<ProductAdd />} />
+          <Route path="/admin/product-edit/:id" element={<ProductEdit />} />
+          <Route path="/admin/categories" element={<CategoriesList />} />
+          <Route path="/admin/categories-add" element={<CategoriesAdd />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

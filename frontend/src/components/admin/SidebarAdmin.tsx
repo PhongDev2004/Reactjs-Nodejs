@@ -2,6 +2,7 @@ import ShopTwoIcon from "@mui/icons-material/ShopTwo";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import CategoryIcon from "@mui/icons-material/Category";
 import AddHomeIcon from "@mui/icons-material/AddHome";
+import { Link } from "react-router-dom";
 
 const SidebarAdmin = () => {
   return (
@@ -18,60 +19,41 @@ const SidebarAdmin = () => {
           role="tablist"
         >
           <li role="presentation">
-            <button
+            <Link
+              to="/admin"
               type="button"
               className="flex w-full items-center justify-start p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              id="list-product-tab"
-              data-tabs-target="#product-list"
-              role="tab"
-              aria-controls="product-list"
-              aria-selected="false"
             >
               <ShopTwoIcon className="text-lg" />
               <span className="ms-3 text-sm">Products</span>
-            </button>
+            </Link>
           </li>
           <li role="presentation">
-            <button
+            <Link
+              to="/admin/categories"
               className="flex w-full items-center justify-start p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              id="add-product-tab"
-              data-tabs-target="#add-product"
-              type="button"
-              role="tab"
-              aria-controls="add-product"
-              aria-selected="false"
             >
               <AddBoxIcon className="text-lg" />
-              <span className="ms-3 text-sm">Add Products</span>
-            </button>
+              <span className="ms-3 text-sm">Categories</span>
+            </Link>
           </li>
           <li role="presentation">
-            <button
+            <Link
+              to="/categories"
               className="flex w-full items-center justify-start p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              id="list-category-tab"
-              data-tabs-target="#list-category"
-              type="button"
-              role="tab"
-              aria-controls="list-category"
-              aria-selected="false"
             >
               <CategoryIcon className="text-lg" />
               <span className="ms-3 text-sm">Categories</span>
-            </button>
+            </Link>
           </li>
           <li role="presentation">
-            <button
+            <Link
+              to="/category"
               className="flex w-full items-center justify-start p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              id="add-category-tab"
-              data-tabs-target="#add-category-view-tab"
-              type="button"
-              role="tab"
-              aria-controls="add-category-view-tab"
-              aria-selected="false"
             >
               <AddHomeIcon className="text-lg" />
-              <span className="ms-3 text-sm">Add Category</span>
-            </button>
+              <span className="ms-3 text-sm">Categories</span>
+            </Link>
           </li>
         </ul>
       </div>

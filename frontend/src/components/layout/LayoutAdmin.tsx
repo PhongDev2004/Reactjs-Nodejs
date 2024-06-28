@@ -9,7 +9,9 @@ const LayoutAdmin = () => {
       <NavbarAdmin />
       <SidebarAdmin />
       <Fragment>
-        <Outlet />
+        <div className="p-4 md:ml-64 pb-20 pt-20">
+          <Outlet />
+        </div>
       </Fragment>
     </>
   );
