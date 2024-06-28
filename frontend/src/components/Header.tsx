@@ -14,8 +14,19 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Link } from "react-router-dom";
 
-const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const pages = [
+  { name: "Home", to: "/" },
+  { name: "Company", to: "company" },
+  { name: "Team", to: "team" },
+  { name: "Features", to: "features" },
+];
+
+const settings = [
+  { name: "Profile", to: "profile" },
+  { name: "Account", to: "account" },
+  { name: "Dashboard", to: "login" },
+  { name: "Logout", to: "logout" },
+];
 
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -94,8 +105,10 @@ function Header() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page.to} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">
+                    <Link to={page.to}>{page.name}</Link>
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -122,11 +135,11 @@ function Header() {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
-                key={page}
+                key={page.to}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
-                {page}
+                <Link to={page.to}>{page.name}</Link>
               </Button>
             ))}
           </Box>
@@ -188,8 +201,10 @@ function Header() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting.to} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">
+                    <Link to={setting.to}>{setting.name}</Link>
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>

@@ -14,12 +14,12 @@ const CartProduct = () => {
                   <a href="#" className="shrink-0 md:order-1">
                     <img
                       className="h-20 w-20 dark:hidden"
-                      src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
+                      src="https://i.ibb.co/BP3mBcr/thumb.jpg"
                       alt="image"
                     />
                     <img
                       className="hidden h-20 w-20 dark:block"
-                      src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg"
+                      src="https://i.ibb.co/BP3mBcr/thumb.jpg"
                       alt="image"
                     />
                   </a>
@@ -95,9 +95,7 @@ const CartProduct = () => {
                       href="#"
                       className="text-base font-medium text-gray-900 hover:underline dark:text-white"
                     >
-                      PC system All in One APPLE iMac (2023), Apple M3, 24"
-                      Retina 4.5K, 8GB, SSD 256GB, 10-core GPU, Keyboard layout
-                      INT
+                      Branded Premium Basic Mesh Shorts
                     </a>
 
                     <div className="flex items-center gap-4">
@@ -167,7 +165,7 @@ const CartProduct = () => {
                     />
                     <img
                       className="mx-auto hidden h-44 w-44 dark:block"
-                      src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg"
+                      src="https://i.ibb.co/2vcg5K8/thumb.jpg"
                       alt="image"
                     />
                   </a>
@@ -176,7 +174,7 @@ const CartProduct = () => {
                       href="#"
                       className="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white"
                     >
-                      iMac 27”
+                      Branded Premium Basic Mesh Shorts
                     </a>
                     <p className="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">
                       This generation has some improvements, including a longer
@@ -246,7 +244,7 @@ const CartProduct = () => {
                     />
                     <img
                       className="mx-auto hidden h-44 w-44 dark:block"
-                      src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ps5-dark.svg"
+                      src="https://i.ibb.co/zP4YWYs/thumb.jpg"
                       alt="image"
                     />
                   </a>
@@ -255,7 +253,7 @@ const CartProduct = () => {
                       href="#"
                       className="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white"
                     >
-                      Playstation 5
+                      Branded Premium Basic Mesh Shorts
                     </a>
                     <p className="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">
                       This generation has some improvements, including a longer
@@ -325,7 +323,7 @@ const CartProduct = () => {
                     />
                     <img
                       className="mx-auto hidden h-44 w-44 dark:block"
-                      src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/apple-watch-dark.svg"
+                      src="https://i.ibb.co/ZVXRFk6/thumb.jpg"
                       alt="image"
                     />
                   </a>
@@ -334,7 +332,7 @@ const CartProduct = () => {
                       href="#"
                       className="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white"
                     >
-                      Apple Watch Series 8
+                      Branded Premium Basic Mesh Shorts
                     </a>
                     <p className="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">
                       This generation has some improvements, including a longer

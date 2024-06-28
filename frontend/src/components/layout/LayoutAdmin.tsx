@@ -1,16 +1,18 @@
 import { Fragment } from "react/jsx-runtime";
-import Header from "../Header";
-import Footer from "../Footer";
 import { Outlet } from "react-router-dom";
+import NavbarAdmin from "../admin/NavbarAdmin";
+import SidebarAdmin from "../admin/SidebarAdmin";
 
 const LayoutAdmin = () => {
   return (
     <>
-      <Header />
+      <NavbarAdmin />
+      <SidebarAdmin />
       <Fragment>
-        <Outlet />
+        <div className="p-4 md:ml-64 pb-20 pt-20">
+          <Outlet />
+        </div>
       </Fragment>
-      <Footer />
     </>
   );
 };
