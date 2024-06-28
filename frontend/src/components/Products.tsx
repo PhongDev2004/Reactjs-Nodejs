@@ -17,6 +17,7 @@ import IconLabelButtons from "./ui/Button";
 import { blue, pink } from "@mui/material/colors";
 import { Link } from "react-router-dom";
 import Loading from "./ui/Loading";
+import Banner from "./Banner";
 
 const ProductList = () => {
   const [products, setProducts] = React.useState<IProduct[]>([]);
@@ -38,8 +39,13 @@ const ProductList = () => {
 
   return (
     <>
+      <Banner />
+
       <Container className="w-full mt-6 mb-6" maxWidth="xl">
         <Loading isShow={loading} />
+        <section className="mx-auto mt-8 mb-8">
+          <h3 className="text-2xl font-bold">New Arrival</h3>
+        </section>
         <Box sx={{ flexGrow: 1 }}>
           <Grid
             container
