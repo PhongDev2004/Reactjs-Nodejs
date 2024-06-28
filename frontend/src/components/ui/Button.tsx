@@ -4,11 +4,16 @@ import React from "react";
 interface IconLabelButtons {
   endIcon?: React.ReactNode;
   title?: string;
+  className?: string;
 }
 
-const IconLabelButtons: React.FC<IconLabelButtons> = ({ endIcon, title }) => {
+const IconLabelButtons: React.FC<IconLabelButtons> = ({
+  endIcon,
+  title,
+  className,
+}) => {
   return (
-    <Button variant="contained" endIcon={endIcon}>
+    <Button variant="contained" endIcon={endIcon} className={className}>
       {title}
     </Button>
   );
