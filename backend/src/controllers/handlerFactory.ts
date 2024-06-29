@@ -19,8 +19,16 @@ export const deleteOne = <T extends Model<any>>(Model: T) =>
 			.json({ message: 'Successfully deleted', data: null });
 	});
 
-export const updateOne = <T extends Model<any>>(Model: T) =>
+export const updateOne = <T extends Model<any>>(Model: T, validation: any) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+		const { error } = validation.validate(req.body);
+		if (error) {
+			return res.status(400).json({
+				status: 'fail',
+				message: error.details[0].message,
+			});
+		}
+
 		if (req.file) {
 			req.body.image = await uploadImage(req.file as Express.Multer.File);
 		}
@@ -43,8 +51,16 @@ export const updateOne = <T extends Model<any>>(Model: T) =>
 		});
 	});
 
-export const createOne = <T extends Model<any>>(Model: T) =>
+export const createOne = <T extends Model<any>>(Model: T, validation: any) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+		const { error } = validation.validate(req.body);
+		if (error) {
+			return res.status(400).json({
+				status: 'fail',
+				message: error.details[0].message,
+			});
+		}
+
 		if (req.file) {
 			req.body.image = await uploadImage(req.file as Express.Multer.File);
 		}
