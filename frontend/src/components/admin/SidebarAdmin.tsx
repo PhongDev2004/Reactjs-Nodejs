@@ -43,7 +43,7 @@ const SidebarAdmin = () => {
               className="flex w-full items-center justify-start p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
             >
               <CategoryIcon className="text-lg" />
-              <span className="ms-3 text-sm">Categories</span>
+              <span className="ms-3 text-sm">Cart</span>
             </Link>
           </li>
           <li role="presentation">
@@ -52,7 +52,7 @@ const SidebarAdmin = () => {
               className="flex w-full items-center justify-start p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
             >
               <AddHomeIcon className="text-lg" />
-              <span className="ms-3 text-sm">Categories</span>
+              <span className="ms-3 text-sm">Favorites</span>
             </Link>
           </li>
         </ul>

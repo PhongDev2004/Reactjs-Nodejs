@@ -18,3 +18,5 @@ export const registerUser = async (user: IUser) => {
     console.log(error);
   }
 };
+
+// export const checkPermissionUser = async (user: IUser) => {};
