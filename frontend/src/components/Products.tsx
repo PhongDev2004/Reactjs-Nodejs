@@ -27,8 +27,8 @@ const ProductList = () => {
     (async () => {
       try {
         setLoading(true);
-        const data = await getProducts();
-        setProducts(data);
+        const response = await getProducts();
+        setProducts(response.data.data);
       } catch (error) {
         console.log(error);
       } finally {
@@ -52,20 +52,20 @@ const ProductList = () => {
             spacing={{ xs: 2, md: 3 }}
             columns={{ xs: 4, sm: 8, md: 12 }}
           >
-            {products.map((product) => (
-              <Grid item xs={2} sm={4} md={3} lg={3} key={product.id}>
+            {products?.map((product) => (
+              <Grid item xs={2} sm={4} md={3} lg={3} key={product._id}>
                 <Card>
-                  <Link to={`/product/${product.id}`}>
+                  <Link to={`/product/${product._id}`}>
                     <CardMedia
                       component="img"
                       height="194"
-                      image={product.thumbnail}
+                      image={product.image}
                       alt={product.name}
                     />
                   </Link>
 
                   <CardContent>
-                    <Link to={`/product/${product.id}`}>
+                    <Link to={`/product/${product._id}`}>
                       <Typography
                         className="truncate"
                         variant="body2"
