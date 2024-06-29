@@ -10,6 +10,7 @@ import connectDB from './Utils/connect';
 import cookieParser from 'cookie-parser';
 import userRouter from './routes/userRoutes';
 import productRouter from './routes/productRoutes';
+import cartRouter from './routes/cartRoutes';
 import { v2 as cloudinary } from 'cloudinary';
 
 cloudinary.config({
@@ -31,6 +32,7 @@ app.use(
 
 app.use('/api/auth', userRouter);
 app.use('/api/products', productRouter);
+app.use('/api/cart', cartRouter);
 
 app.listen(PORT, (): void => {
 	connectDB();

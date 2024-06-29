@@ -1,4 +1,3 @@
-import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -12,6 +11,13 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useForm } from "react-hook-form";
+import { IUser } from "src/interfaces/User";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as zod from "zod";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { registerUser } from "src/service/auth";
 
 function Copyright(props: any) {
   return (
@@ -24,23 +30,46 @@ function Copyright(props: any) {
       {"Copyright © "}
       <Link color="inherit" href="/">
         Your Website
-      </Link>{" "}
+      </Link>
       {new Date().getFullYear()}
-      {"."}
     </Typography>
   );
 }
 
 const defaultTheme = createTheme();
 
+const schemaRegister = zod.object({
+  username: zod
+    .string()
+    .min(6, { message: "Username must be at least 6 characters long" }),
+  email: zod.string().email({ message: "Invalid email address" }),
+  password: zod
+    .string()
+    .min(6, { message: "Password must be at least 6 characters long" }),
+});
+
 export default function SignUp() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IUser>({
+    resolver: zodResolver(schemaRegister),
+  });
+
+  const onSubmit = async (data: IUser) => {
+    const response = await registerUser(data);
+
+    if (response) {
+      toast.success("Registration successfully!");
+      navigate("/login");
+    }
+    try {
+    } catch (error) {
+      console.log(error);
+      toast.error("Registration failed!");
+    }
   };
 
   return (
@@ -48,6 +77,7 @@ export default function SignUp() {
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
+          onSubmit={handleSubmit(onSubmit)}
           sx={{
             marginTop: 8,
             display: "flex",
@@ -61,31 +91,42 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
+          <Box component="form" noValidate sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              autoComplete="username"
+              autoFocus
+              {...register("username")}
+              error={!!errors.username}
+              helperText={errors.username ? errors.username.message : ""}
+            />
             <TextField
               margin="normal"
               required
               fullWidth
               id="email"
               label="Email Address"
-              name="email"
               autoComplete="email"
               autoFocus
+              {...register("email")}
+              error={!!errors.email}
+              helperText={errors.email ? errors.email.message : ""}
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              name="password"
               label="Password"
               type="password"
               id="password"
               autoComplete="current-password"
+              {...register("password")}
+              error={!!errors.password}
+              helperText={errors.password ? errors.password.message : ""}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}

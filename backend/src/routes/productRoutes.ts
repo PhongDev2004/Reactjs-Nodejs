@@ -6,8 +6,8 @@ import {
 	getProduct,
 	updateProduct,
 } from '../controllers/productController';
-import { protect, restrictTo } from '../controllers/authController';
 import multer from 'multer';
+import { protect, restrictTo } from '../middlewares/auth';
 
 const router = express.Router();
 
