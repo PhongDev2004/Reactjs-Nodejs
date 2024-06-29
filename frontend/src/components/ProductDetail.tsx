@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { useParams } from "react-router-dom";
 import { IProduct } from "../interfaces/Product";
 import { getProduct } from "../service/product";
@@ -6,13 +6,32 @@ import { getProduct } from "../service/product";
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState<IProduct | null>(null);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    (async () => {
-      const data = await getProduct(id!);
-      setProduct(data);
-    })();
+    if (!id) return;
+    getProductDetail(id);
   }, []);
+
+  const getProductDetail = async (id: string) => {
+    try {
+      const data = await getProduct(id || "");
+
+      if (data?.data?.data) {
+        setProduct(data.data.data);
+      }
+    } catch (error) {
+      setProduct(null);
+    }
+  };
+
+  const handleReduce = () => {
+    setQuantity((prevQuantity) => prevQuantity + 1);
+  };
+
+  const handleIncrease = () => {
+    setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
+  };
   return (
     <section className="relative mt-5 mb-5">
       <div className="w-full mx-auto px-4 sm:px-6 lg:px-0">
@@ -20,7 +39,7 @@ const ProductDetail = () => {
           <div className="img">
             <div className="img-box h-full max-lg:mx-auto ">
               <img
-                src={product?.thumbnail}
+                src={product?.image}
                 alt={product?.name}
                 className="max-lg:mx-auto lg:ml-auto h-full"
               />
@@ -137,7 +156,7 @@ const ProductDetail = () => {
                     </svg>
                   </div>
                   <span className="pl-2 font-normal leading-7 text-gray-500 text-sm ">
-                    1624 review
+                    {product?.numReviews} review
                   </span>
                 </div>
               </div>
@@ -254,7 +273,10 @@ const ProductDetail = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 py-8">
                 <div className="flex sm:items-center sm:justify-center w-full">
-                  <button className="group py-4 px-6 border border-gray-400 rounded-l-full bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-sm hover:shadow-gray-300">
+                  <button
+                    onClick={handleIncrease}
+                    className="group py-4 px-6 border border-gray-400 rounded-l-full bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-sm hover:shadow-gray-300"
+                  >
                     <svg
                       className="stroke-gray-900 group-hover:stroke-black"
                       width="22"
@@ -287,10 +309,14 @@ const ProductDetail = () => {
                   </button>
                   <input
                     type="text"
+                    value={quantity}
                     className="font-semibold text-gray-900 cursor-pointer text-lg py-[13px] px-6 w-full sm:max-w-[118px] outline-0 border-y border-gray-400 bg-transparent placeholder:text-gray-900 text-center hover:bg-gray-50"
                     placeholder="1"
                   />
-                  <button className="group py-4 px-6 border border-gray-400 rounded-r-full bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-sm hover:shadow-gray-300">
+                  <button
+                    onClick={handleReduce}
+                    className="group py-4 px-6 border border-gray-400 rounded-r-full bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-sm hover:shadow-gray-300"
+                  >
                     <svg
                       className="stroke-gray-900 group-hover:stroke-black"
                       width="22"
@@ -372,4 +398,4 @@ const ProductDetail = () => {
   );
 };
 
-export default ProductDetail;
+export default memo(ProductDetail);
