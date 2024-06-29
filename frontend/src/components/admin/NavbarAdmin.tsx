@@ -17,7 +17,7 @@ const NavbarAdmin = () => {
               <i className="bi bi-list text-xl w-6 h-6"></i>
             </button>
             <a
-              href="index.html"
+              href="/admin"
               className="md:flex items-center space-x-3 rtl:space-x-reverse hidden"
             >
               <AdbIcon
