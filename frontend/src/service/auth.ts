@@ -69,3 +69,5 @@ export const isAdmin = async (
 	const { data } = await getUser(decoded.id);
 	return data.data.role === requiredRole;
 };
+
+// export const checkPermissionUser = async (user: IUser) => {};

@@ -1,6 +1,5 @@
-import { Route, Routes } from 'react-router-dom';
-import './App.css';
-
+import { Route, Routes } from "react-router-dom";
+import "./App.css";
 import SignIn from './pages/Sign-in';
 import SignUp from './pages/Sign-up';
 import ProductList from './components/Products';
@@ -49,10 +48,11 @@ function App() {
 					/>
 				</Route>
 
-				<Route path="*" element={<NotFound />} />
-			</Routes>
-		</>
-	);
+
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
+  );
 }
 
 export default App;

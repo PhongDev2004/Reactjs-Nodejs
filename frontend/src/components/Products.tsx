@@ -18,10 +18,13 @@ import { blue, pink } from "@mui/material/colors";
 import { Link } from "react-router-dom";
 import Loading from "./ui/Loading";
 import Banner from "./Banner";
+import Pagination from "@mui/material/Pagination";
 
 const ProductList = () => {
   const [products, setProducts] = React.useState<IProduct[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [page, setPage] = React.useState<number>(1);
+  const itemsPerPage = 12;
 
   React.useEffect(() => {
     (async () => {
@@ -36,6 +39,11 @@ const ProductList = () => {
       }
     })();
   }, []);
+
+  const startIndex = (page - 1) * itemsPerPage;
+  const visibleProducts = products.slice(startIndex, startIndex + itemsPerPage);
+
+  const totalPages = Math.ceil(products.length / itemsPerPage);
 
   return (
     <>
@@ -52,7 +60,7 @@ const ProductList = () => {
             spacing={{ xs: 2, md: 3 }}
             columns={{ xs: 4, sm: 8, md: 12 }}
           >
-            {products?.map((product) => (
+            {visibleProducts?.map((product) => (
               <Grid item xs={2} sm={4} md={3} lg={3} key={product._id}>
                 <Card>
                   <Link to={`/product/${product._id}`}>
@@ -95,6 +103,13 @@ const ProductList = () => {
             ))}
           </Grid>
         </Box>
+        <Pagination
+          className="mt-4 flex justify-end items-center"
+          count={totalPages}
+          color="primary"
+          page={page}
+          onChange={(event, value) => setPage(value)}
+        />
       </Container>
     </>
   );

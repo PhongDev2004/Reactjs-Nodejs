@@ -1,4 +1,57 @@
+import { useForm } from "react-hook-form";
+import { joiResolver } from "@hookform/resolvers/joi";
+import * as Joi from "joi";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { handleAddProduct } from "src/service/product";
+import { IProduct } from "src/interfaces/Product";
+
+const schemaProduct = Joi.object({
+  name: Joi.string().required().min(3).max(100),
+  price: Joi.number().required().min(0),
+  description: Joi.string().allow(null, ""),
+  countInStock: Joi.number(),
+  brand: Joi.string(),
+  image: Joi.any().optional(),
+});
+
 const ProductAdd = () => {
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IProduct>({
+    resolver: joiResolver(schemaProduct),
+  });
+
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const onSubmit = async (data: IProduct) => {
+    if (data.image && (data.image as unknown as FileList).length > 0) {
+      const file = (data.image as unknown as FileList)[0];
+      try {
+        data.image = await convertFileToBase64(file);
+      } catch (error) {
+        console.error("Failed to convert image to base64", error);
+      }
+    }
+
+    const newProduct = await handleAddProduct(data);
+
+    if (newProduct) {
+      toast.success("Product added successfully!");
+      navigate("/admin");
+    }
+  };
+
   return (
     <section>
       <div
@@ -12,9 +65,13 @@ const ProductAdd = () => {
             <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
               Add a new product
             </h2>
-            <form id="add-product-form" className="space-y-6">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              id="add-product-form"
+              className="space-y-6"
+            >
               <div className="grid md:grid-cols-2 grid-cols-1 gap-6">
-                <div className="">
+                <div>
                   <label
                     htmlFor="add-name"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -23,15 +80,19 @@ const ProductAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="add-name"
                     id="add-name"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-600 focus:border-slate-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
                     placeholder="Type product name"
+                    {...register("name")}
                   />
-                  <span
-                    id="add-name-error"
-                    className="error-message text-xs text-red-500"
-                  ></span>
+                  {errors.name && (
+                    <span
+                      id="add-name-error"
+                      className="error-message text-xs text-red-500"
+                    >
+                      {errors.name.message}
+                    </span>
+                  )}
                 </div>
                 <div className="w-full">
                   <label
@@ -41,16 +102,20 @@ const ProductAdd = () => {
                     Price
                   </label>
                   <input
-                    type="number"
-                    name="add-price"
+                    type="text"
                     id="add-price"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-600 focus:border-slate-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
                     placeholder="$2999"
+                    {...register("price")}
                   />
-                  <span
-                    id="add-price-error"
-                    className="error-message text-xs text-red-500"
-                  ></span>
+                  {errors.price && (
+                    <span
+                      id="add-price-error"
+                      className="error-message text-xs text-red-500"
+                    >
+                      {errors.price.message}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="grid md:grid-cols-2 grid-cols-1 gap-6">
@@ -59,41 +124,34 @@ const ProductAdd = () => {
                     htmlFor="add-category"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Category
+                    Stock
                   </label>
-                  <select
-                    id="add-category"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-500 focus:border-slate-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
-                  >
-                    <option value="">Select category</option>
-                  </select>
-                  <span
-                    id="add-category-error"
-                    className="error-message text-xs text-red-500"
-                  ></span>
+                  <input
+                    type="number"
+                    id="add-product-qty"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-600 focus:border-slate-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
+                    placeholder="12"
+                    {...register("countInStock")}
+                  />
                 </div>
                 <div>
                   <label
                     htmlFor="add-product-qty"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Quantity
+                    Brand
                   </label>
                   <input
-                    type="number"
-                    name="add-product-qty"
-                    id="add-product-qty"
+                    type="text"
+                    id="add-name"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-600 focus:border-slate-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
-                    placeholder="12"
+                    placeholder="Brand"
+                    {...register("brand")}
                   />
-                  <span
-                    id="add-qty-error"
-                    className="error-message text-xs text-red-500"
-                  ></span>
                 </div>
               </div>
 
-              <div className="">
+              <div>
                 <label
                   htmlFor="add-desc"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -105,52 +163,27 @@ const ProductAdd = () => {
                   rows={8}
                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-slate-500 focus:border-slate-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
                   placeholder="Your description here"
+                  {...register("description")}
                 ></textarea>
-                <span
-                  id="add-desc-error"
-                  className="error-message text-xs text-red-500"
-                ></span>
               </div>
               <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  {" "}
-                  Cover photo{" "}
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Cover photo
                 </label>
-                <div className="grid md:grid-cols-2 grid-cols-1 gap-6">
-                  <div className="aspect-square flex flex-col items-center justify-center border overflow-hidden rounded-md">
-                    <img
-                      id="add-preview-image"
-                      src="assets/images/main.png"
-                      alt=""
-                    />
-                  </div>
-                  <div className="mt-1 flex justify-center items-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                    <div className="space-y-1 text-center">
-                      <i className="bi bi-cloud-arrow-up text-xl text-slate-400"></i>
-                      <div className="flex justify-center text-sm text-gray-600">
-                        <label
-                          htmlFor="add-file-upload"
-                          className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
-                        >
-                          <span className="text-center">Upload a file</span>
-                          <input
-                            id="add-file-upload"
-                            name="add-file-upload"
-                            type="file"
-                            className="sr-only"
-                          />
-                        </label>
-                      </div>
-                      <p className="text-xs text-gray-500">
-                        PNG, JPG, GIF up to 10MB
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <span
-                  id="add-image-error"
-                  className="error-message text-xs text-red-500"
-                ></span>
+                <input
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-600 focus:border-slate-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
+                  id="file_input"
+                  type="file"
+                  {...register("image")}
+                />
+                {errors.image && (
+                  <span
+                    id="add-image-error"
+                    className="error-message text-xs text-red-500"
+                  >
+                    {errors.image.message}
+                  </span>
+                )}
               </div>
               <button
                 id="add-product-btn"
