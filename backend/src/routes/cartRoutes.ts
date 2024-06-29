@@ -1,11 +1,11 @@
 import express from 'express';
-import { protect } from '../controllers/authController';
 import {
 	addItemToCart,
 	getCart,
 	removeItemFromCart,
 	updateQuantity,
 } from '../controllers/cartController';
+import { protect } from '../middlewares/auth';
 
 const router = express.Router();
 
