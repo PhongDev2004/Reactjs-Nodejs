@@ -14,12 +14,9 @@ import ProductAdd from './pages/admin/ProductAdd';
 import ProductEdit from './pages/admin/ProductEdit';
 import CategoriesList from './pages/admin/CategoriesList';
 import CategoriesAdd from './pages/admin/CategoriesAdd';
-import { jwtDecode } from 'jwt-decode';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
-	const token = document.cookie;
-	const decoded = jwtDecode(token);
-	console.log(decoded);
 	return (
 		<>
 			<Routes>
@@ -30,7 +27,15 @@ function App() {
 					<Route path="/product/:id" element={<ProductDetail />} />
 					<Route path="/cart" element={<CartProduct />} />
 				</Route>
-				<Route path="/admin" element={<LayoutAdmin />}>
+				<Route
+					path="/admin"
+					element={
+						<ProtectedRoute
+							requiredRole="admin"
+							element={<LayoutAdmin />}
+						/>
+					}
+				>
 					<Route index element={<Dashboard />} />
 					<Route path="/admin/product-add" element={<ProductAdd />} />
 					<Route
