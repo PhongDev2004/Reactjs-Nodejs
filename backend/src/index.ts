@@ -8,9 +8,10 @@ import {
 } from './Utils/env';
 import connectDB from './Utils/connect';
 import cookieParser from 'cookie-parser';
-import userRouter from './routes/userRoutes';
+import authRouter from './routes/authRoutes';
 import productRouter from './routes/productRoutes';
 import cartRouter from './routes/cartRoutes';
+import userRouter from './routes/userRoutes';
 import { v2 as cloudinary } from 'cloudinary';
 
 cloudinary.config({
@@ -30,9 +31,10 @@ app.use(
 	})
 );
 
-app.use('/api/auth', userRouter);
+app.use('/api/auth', authRouter);
 app.use('/api/products', productRouter);
 app.use('/api/cart', cartRouter);
+app.use('/api/users', userRouter);
 
 app.listen(PORT, (): void => {
 	connectDB();
