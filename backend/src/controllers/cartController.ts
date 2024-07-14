@@ -6,15 +6,10 @@ export const getCart = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
 		const userId = req.user._id;
 
-		const cart = await Cart.findOne({ userId }).populate(
-			'products.productId'
-		);
+		let cart = await Cart.findOne({ userId }).populate('products.productId');
 
 		if (!cart) {
-			return res.status(404).json({
-				status: 'fail',
-				message: 'Cart not found',
-			});
+			cart = await Cart.create({ userId, products: [] });
 		}
 
 		return res.status(200).json({
