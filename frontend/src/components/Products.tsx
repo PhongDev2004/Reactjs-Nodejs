@@ -20,22 +20,27 @@ import Loading from "./ui/Loading";
 import Banner from "./Banner";
 import Pagination from "@mui/material/Pagination";
 import TextField from "@mui/material/TextField";
-
+import { useLoading } from "src/context/LoadingErrorContext";
+import { useFlashError } from "src/context/FlashError";
+import Alert from "@mui/material/Alert";
+import CloseIcon from "@mui/icons-material/Close";
 const ProductList = () => {
   const [products, setProducts] = React.useState<IProduct[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  // const [loading, setLoading] = React.useState<boolean>(false);
   const [page, setPage] = React.useState<number>(1);
   const [searchTerm, setSearchTerm] = React.useState<string>("");
   const itemsPerPage = 12;
-
+  const { isLoading, setLoading } = useLoading();
+  const { error, setError, clearError } = useFlashError();
   React.useEffect(() => {
     (async () => {
       try {
         setLoading(true);
         const response = await getProducts();
         setProducts(response.data.data);
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        console.log(err);
+        setError("Failed to fetch products.");
       } finally {
         setLoading(false);
       }
@@ -56,85 +61,104 @@ const ProductList = () => {
   return (
     <>
       <Banner />
-
-      <Container className="w-full mt-6 mb-6" maxWidth="xl">
-        <Loading isShow={loading} />
-        <section className="mx-auto mt-8 mb-8">
-          <h3 className="text-2xl font-bold">New Arrival</h3>
-        </section>
-        <div className="flex justify-end items-center mb-5">
-          <TextField
-            label="Search Products"
-            variant="outlined"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="my-4 w-60"
-          />
-        </div>
-
-        <Box sx={{ flexGrow: 1 }}>
-          {visibleProducts.length === 0 ? (
-            <Typography variant="body1" color="text.secondary">
-              No products found.
-            </Typography>
-          ) : (
-            <Grid
-              container
-              spacing={{ xs: 2, md: 3 }}
-              columns={{ xs: 4, sm: 8, md: 12 }}
+      {error ? (
+        <Alert
+          severity="error"
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={clearError}
             >
-              {visibleProducts?.map((product) => (
-                <Grid item xs={2} sm={4} md={3} lg={3} key={product._id}>
-                  <Card>
-                    <Link to={`/product/${product._id}`}>
-                      <CardMedia
-                        component="img"
-                        height="194"
-                        image={product.image}
-                        alt={product.name}
-                      />
-                    </Link>
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+        >
+          {error}
+        </Alert>
+      ) : (
+        <>
+          <Container className="w-full mt-6 mb-6" maxWidth="xl">
+            <Loading isShow={isLoading} />
+            <section className="mx-auto mt-8 mb-8">
+              <h3 className="text-2xl font-bold">New Arrival</h3>
+            </section>
+            <div className="flex justify-end items-center mb-5">
+              <TextField
+                label="Search Products"
+                variant="outlined"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="my-4 w-60"
+              />
+            </div>
 
-                    <CardContent>
-                      <Link to={`/product/${product._id}`}>
-                        <Typography
-                          className="truncate"
-                          variant="body2"
-                          color="text.secondary"
-                        >
-                          {product.name}
-                        </Typography>
-                      </Link>
-                    </CardContent>
-                    <CardActions disableSpacing>
-                      <IconButton aria-label="add to favorites">
-                        <FavoriteIcon sx={{ color: pink[500] }} />
-                      </IconButton>
-                      <IconButton aria-label="share">
-                        <ShareIcon sx={{ color: blue[500] }} />
-                      </IconButton>
+            <Box sx={{ flexGrow: 1 }}>
+              {visibleProducts.length === 0 ? (
+                <Typography variant="body1" color="text.secondary">
+                  No products found.
+                </Typography>
+              ) : (
+                <Grid
+                  container
+                  spacing={{ xs: 2, md: 3 }}
+                  columns={{ xs: 4, sm: 8, md: 12 }}
+                >
+                  {visibleProducts?.map((product) => (
+                    <Grid item xs={2} sm={4} md={3} lg={3} key={product._id}>
+                      <Card>
+                        <Link to={`/product/${product._id}`}>
+                          <CardMedia
+                            component="img"
+                            height="194"
+                            image={product.image}
+                            alt={product.name}
+                          />
+                        </Link>
 
-                      <div className="flex w-full justify-end items-center">
-                        <IconLabelButtons
-                          title="Buy now"
-                          endIcon={<LocalMallIcon />}
-                        />
-                      </div>
-                    </CardActions>
-                  </Card>
+                        <CardContent>
+                          <Link to={`/product/${product._id}`}>
+                            <Typography
+                              className="truncate"
+                              variant="body2"
+                              color="text.secondary"
+                            >
+                              {product.name}
+                            </Typography>
+                          </Link>
+                        </CardContent>
+                        <CardActions disableSpacing>
+                          <IconButton aria-label="add to favorites">
+                            <FavoriteIcon sx={{ color: pink[500] }} />
+                          </IconButton>
+                          <IconButton aria-label="share">
+                            <ShareIcon sx={{ color: blue[500] }} />
+                          </IconButton>
+
+                          <div className="flex w-full justify-end items-center">
+                            <IconLabelButtons
+                              title="Buy now"
+                              endIcon={<LocalMallIcon />}
+                            />
+                          </div>
+                        </CardActions>
+                      </Card>
+                    </Grid>
+                  ))}
                 </Grid>
-              ))}
-            </Grid>
-          )}
-        </Box>
-        <Pagination
-          className="mt-4 flex justify-end items-center"
-          count={totalPages}
-          color="primary"
-          page={page}
-          onChange={(event, value) => setPage(value)}
-        />
-      </Container>
+              )}
+            </Box>
+            <Pagination
+              className="mt-4 flex justify-end items-center"
+              count={totalPages}
+              color="primary"
+              page={page}
+              onChange={(event, value) => setPage(value)}
+            />
+          </Container>
+        </>
+      )}
     </>
   );
 };
