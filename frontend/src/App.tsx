@@ -14,7 +14,7 @@ import ProductEdit from "./pages/admin/ProductEdit";
 import CategoriesList from "./pages/admin/CategoriesList";
 import CategoriesAdd from "./pages/admin/CategoriesAdd";
 import ProtectedRoute from "./components/ProtectedRoute";
-import PostList from "./pages/Blog";
+import Blog from "./pages/Blog";
 
 function App() {
   return (
@@ -25,7 +25,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<ProductList />} />
           <Route path="/product/:id" element={<ProductDetail />} />
-          <Route path="/post" element={<PostList />} />
+          <Route path="/post" element={<Blog />} />
           <Route path="/cart" element={<CartProduct />} />
         </Route>
         <Route
