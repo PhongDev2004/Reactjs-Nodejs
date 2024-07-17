@@ -1,599 +1,455 @@
-import { useEffect, useState } from "react";
-import { ProductCart } from "src/interfaces/ProductCart";
-import { getCart, removeFromCart, updateCart } from "src/service/cart";
+import { useEffect, useState } from 'react';
+import { ProductCart } from 'src/interfaces/ProductCart';
+import { getCart, removeFromCart, updateCart } from 'src/service/cart';
+import {
+	Box,
+	Container,
+	Grid,
+	Typography,
+	Paper,
+	IconButton,
+	Button,
+	Divider,
+	TextField,
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 const CartProduct = () => {
-  const [products, setProducts] = useState<ProductCart[]>([]);
+	const [products, setProducts] = useState<ProductCart[]>([]);
+	useEffect(() => {
+		(async () => {
+			try {
+				const response = await getCart();
+				setProducts(response.data.cart.products);
+			} catch (error) {
+				console.log(error);
+			}
+		})();
+	}, []);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await getCart();
-        setProducts(response.data.cart.products);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
+	const handleRemove = async (productId: string | undefined) => {
+		try {
+			const response = await removeFromCart(productId);
+			setProducts(
+				products.filter((product) => product.productId._id !== productId)
+			);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
-  const handleRemove = async (productId: string | undefined) => {
-    try {
-      const response = await removeFromCart(productId);
-      setProducts(
-        products.filter((product) => product.productId._id !== productId)
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
+	const handleIncrease = async (productId: string | undefined) => {
+		try {
+			const product = products.find(
+				(product) => product.productId._id === productId
+			);
+			if (product) {
+				const response = await updateCart(productId, product.quantity + 1);
+				setProducts(
+					products.map((product) =>
+						product.productId._id === productId
+							? { ...product, quantity: product.quantity + 1 }
+							: product
+					)
+				);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
-  const handleIncrease = async (productId: string | undefined) => {
-    try {
-      const product = products.find(
-        (product) => product.productId._id === productId
-      );
-      if (product) {
-        const response = await updateCart(productId, product.quantity + 1);
-        setProducts(
-          products.map((product) =>
-            product.productId._id === productId
-              ? { ...product, quantity: product.quantity + 1 }
-              : product
-          )
-        );
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+	const handleDecrease = async (productId: string | undefined) => {
+		try {
+			const product = products.find(
+				(product) => product.productId._id === productId
+			);
+			if (product) {
+				const response = await updateCart(productId, product.quantity - 1);
+				if (product.quantity === 1) {
+					return handleRemove(productId);
+				}
+				setProducts(
+					products.map((product) =>
+						product.productId._id === productId
+							? { ...product, quantity: product.quantity - 1 }
+							: product
+					)
+				);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
-  const handleDecrease = async (productId: string | undefined) => {
-    try {
-      const product = products.find(
-        (product) => product.productId._id === productId
-      );
-      if (product) {
-        const response = await updateCart(productId, product.quantity - 1);
-        if (product.quantity === 1) {
-          return handleRemove(productId);
-        }
-        setProducts(
-          products.map((product) =>
-            product.productId._id === productId
-              ? { ...product, quantity: product.quantity - 1 }
-              : product
-          )
-        );
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+	return (
+		<Box bgcolor="background.paper" py={{ xs: 2, md: 4 }}>
+			<Container maxWidth="lg">
+				<Typography variant="h6" color="text.primary" fontWeight="bold">
+					Shopping Cart
+				</Typography>
 
-  return (
-    <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
-      <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
-          Shopping Cart
-        </h2>
+				<Grid container spacing={{ xs: 2, md: 3 }} mt={{ xs: 0, sm: 1 }}>
+					<Grid item xs={12} lg={8}>
+						{products.map((product) => (
+							<Paper
+								key={product.productId._id}
+								sx={{ mb: 2, p: { xs: 2, md: 3 } }}
+							>
+								<Grid container spacing={2} alignItems="center">
+									<Grid item xs={2}>
+										<a href="#">
+											<img
+												src={product.productId.image}
+												alt="image"
+												style={{ width: '100%' }}
+											/>
+										</a>
+									</Grid>
+									<Grid
+										item
+										xs={10}
+										sx={{
+											display: 'grid',
+											alignItems: 'center',
+											gridTemplateColumns: '5fr 1fr 0.5fr',
+											gap: 5,
+										}}
+									>
+										<Box>
+											<Typography
+												variant="body1"
+												fontWeight="medium"
+												fontSize={14}
+											>
+												{product.productId.name}
+											</Typography>
+											<Box mt={1} sx={{ display: 'flex' }}>
+												<Button
+													startIcon={<FavoriteBorderIcon />}
+													size="small"
+													sx={{
+														mr: 1,
+														fontSize: 10,
+														display: 'flex',
+														alignItems: 'center',
+													}}
+												>
+													Add to Favorites
+												</Button>
+												<Button
+													startIcon={<DeleteOutlineIcon />}
+													color="error"
+													size="small"
+													onClick={() =>
+														handleRemove(product.productId._id)
+													}
+													sx={{
+														fontSize: 10,
+														display: 'flex',
+														alignItems: 'center',
+													}}
+												>
+													Remove
+												</Button>
+											</Box>
+										</Box>
+										<Box display="flex" alignItems="center" mt={1}>
+											<IconButton
+												onClick={() =>
+													handleDecrease(product.productId._id)
+												}
+												size="small"
+											>
+												<RemoveIcon />
+											</IconButton>
+											<TextField
+												value={product.quantity}
+												size="small"
+												sx={{
+													width: 40,
+													textAlign: 'center',
+												}}
+												inputProps={{
+													style: { textAlign: 'center' },
+												}}
+											/>
+											<IconButton
+												onClick={() =>
+													handleIncrease(product.productId._id)
+												}
+												size="small"
+											>
+												<AddIcon />
+											</IconButton>
+										</Box>
+										<Typography
+											variant="body1"
+											fontWeight="bold"
+											textAlign="center"
+										>
+											${product.productId.price * product.quantity}
+										</Typography>
+									</Grid>
+								</Grid>
+							</Paper>
+						))}
 
-        <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
-          <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
-            {products.map((product) => (
-              <div key={product.productId._id} className="space-y-6">
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6">
-                  <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-                    <a href="#" className="shrink-0 md:order-1">
-                      <img
-                        className="h-20 w-20 dark:hidden"
-                        src={product.productId.image}
-                        alt="image"
-                      />
-                      <img
-                        className="hidden h-20 w-20 dark:block"
-                        src="https://i.ibb.co/BP3mBcr/thumb.jpg"
-                        alt="image"
-                      />
-                    </a>
+						<Box
+							sx={{
+								display: { xl: 'block', xs: 'none' },
+								mt: { xl: 8 },
+							}}
+						>
+							<Typography
+								variant="h5"
+								fontWeight="bold"
+								color="text.primary"
+							>
+								People also bought
+							</Typography>
+							<Grid container spacing={2} sx={{ mt: 1 }}>
+								{[...Array(3)].map((_, index) => (
+									<Grid item xs={12} sm={6} md={4} key={index}>
+										<Paper
+											sx={{
+												p: 3,
+												display: 'flex',
+												flexDirection: 'column',
+												alignItems: 'start',
+												gap: 2,
+												borderRadius: 2,
+												overflow: 'hidden',
+												boxShadow: 1,
+												bgcolor: 'background.paper',
+												borderColor: 'divider',
+											}}
+											variant="outlined"
+										>
+											<Box
+												component="a"
+												href="#"
+												sx={{ overflow: 'hidden', borderRadius: 2 }}
+											>
+												<img
+													style={{
+														width: '11rem',
+														height: '11rem',
+													}}
+													src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
+													alt="product"
+												/>
+											</Box>
+											<Box>
+												<Typography
+													variant="h6"
+													component="a"
+													href="#"
+													sx={{
+														textDecoration: 'none',
+														color: 'text.primary',
+														'&:hover': {
+															textDecoration: 'underline',
+														},
+														lineHeight: 1,
+													}}
+												>
+													Branded Premium Basic Mesh Shorts
+												</Typography>
+												<Typography
+													variant="body2"
+													color="text.secondary"
+													sx={{ mt: 1 }}
+												>
+													This generation has some improvements,
+													including a longer continuous battery
+													life.
+												</Typography>
+											</Box>
+											<Box>
+												<Typography
+													variant="body1"
+													color="text.primary"
+													sx={{ textDecoration: 'line-through' }}
+													fontWeight="bold"
+												>
+													$399.99
+												</Typography>
+												<Typography
+													variant="body1"
+													color="error"
+													fontWeight="bold"
+												>
+													$299
+												</Typography>
+											</Box>
+											<Box
+												sx={{
+													display: 'flex',
+													alignItems: 'center',
+													gap: 1.5,
+												}}
+											>
+												<IconButton
+													sx={{
+														border: '1px solid',
+														borderColor: 'divider',
+														bgcolor: 'background.paper',
+														color: 'text.primary',
+														borderRadius: 1,
+														'&:hover': {
+															bgcolor: 'background.default',
+															color: 'primary.main',
+														},
+													}}
+													size="small"
+												>
+													<FavoriteBorderIcon />
+												</IconButton>
+												<Button
+													variant="contained"
+													color="primary"
+													startIcon={<AddShoppingCartIcon />}
+													fullWidth
+													size="small"
+													// sx={{ padding: '5px' }}
+												>
+													Add to cart
+												</Button>
+											</Box>
+										</Paper>
+									</Grid>
+								))}
+							</Grid>
+						</Box>
+					</Grid>
 
-                    <label htmlFor="counter-input" className="sr-only">
-                      Choose quantity:
-                    </label>
-                    <div className="flex items-center justify-between md:order-3 md:justify-end">
-                      <div className="flex items-center">
-                        <button
-                          onClick={() => handleDecrease(product.productId._id)}
-                          type="button"
-                          id="decrement-button"
-                          data-input-counter-decrement="counter-input"
-                          className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
-                        >
-                          <svg
-                            className="h-2.5 w-2.5 text-gray-900 dark:text-white"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 18 2"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M1 1h16"
-                            />
-                          </svg>
-                        </button>
-                        <input
-                          type="text"
-                          id="counter-input"
-                          data-input-counter
-                          className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
-                          placeholder=""
-                          value={product.quantity}
-                          required
-                        />
-                        <button
-                          onClick={() => handleIncrease(product.productId._id)}
-                          type="button"
-                          id="increment-button"
-                          data-input-counter-increment="counter-input"
-                          className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
-                        >
-                          <svg
-                            className="h-2.5 w-2.5 text-gray-900 dark:text-white"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 18 18"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M9 1v16M1 9h16"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                      <div className="text-end md:order-4 md:w-32">
-                        <p className="text-base font-bold text-gray-900 dark:text-white">
-                          ${product.productId.price * product.quantity}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
-                      <a
-                        href="#"
-                        className="text-base font-medium text-gray-900 hover:underline dark:text-white"
-                      >
-                        {product.productId.name}
-                      </a>
-
-                      <div className="flex items-center gap-4">
-                        <button
-                          type="button"
-                          className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white"
-                        >
-                          <svg
-                            className="me-1.5 h-5 w-5"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"
-                            />
-                          </svg>
-                          Add to Favorites
-                        </button>
-
-                        <button
-                          onClick={() => handleRemove(product.productId._id)}
-                          type="button"
-                          className="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500"
-                        >
-                          <svg
-                            className="me-1.5 h-5 w-5"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M6 18 17.94 6M18 18 6.06 6"
-                            />
-                          </svg>
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-            <div className="hidden xl:mt-8 xl:block">
-              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
-                People also bought
-              </h3>
-              <div className="mt-6 grid grid-cols-3 gap-4 sm:mt-8">
-                <div className="space-y-6 overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                  <a href="#" className="overflow-hidden rounded">
-                    <img
-                      className="mx-auto h-44 w-44 dark:hidden"
-                      src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
-                      alt="image"
-                    />
-                    <img
-                      className="mx-auto hidden h-44 w-44 dark:block"
-                      src="https://i.ibb.co/2vcg5K8/thumb.jpg"
-                      alt="image"
-                    />
-                  </a>
-                  <div>
-                    <a
-                      href="#"
-                      className="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white"
-                    >
-                      Branded Premium Basic Mesh Shorts
-                    </a>
-                    <p className="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">
-                      This generation has some improvements, including a longer
-                      continuous battery life.
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-lg font-bold text-gray-900 dark:text-white">
-                      <span className="line-through"> $399,99 </span>
-                    </p>
-                    <p className="text-lg font-bold leading-tight text-red-600 dark:text-red-500">
-                      $299
-                    </p>
-                  </div>
-                  <div className="mt-6 flex items-center gap-2.5">
-                    <button
-                      type="button"
-                      className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white p-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z"
-                        ></path>
-                      </svg>
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex w-full items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium  text-white hover:bg-blue-800"
-                    >
-                      <svg
-                        className="-ms-2 me-2 h-5 w-5"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7h-1M8 7h-.688M13 5v4m-2-2h4"
-                        />
-                      </svg>
-                      Add to cart
-                    </button>
-                  </div>
-                </div>
-                <div className="space-y-6 overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                  <a href="#" className="overflow-hidden rounded">
-                    <img
-                      className="mx-auto h-44 w-44 dark:hidden"
-                      src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ps5-light.svg"
-                      alt="image"
-                    />
-                    <img
-                      className="mx-auto hidden h-44 w-44 dark:block"
-                      src="https://i.ibb.co/zP4YWYs/thumb.jpg"
-                      alt="image"
-                    />
-                  </a>
-                  <div>
-                    <a
-                      href="#"
-                      className="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white"
-                    >
-                      Branded Premium Basic Mesh Shorts
-                    </a>
-                    <p className="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">
-                      This generation has some improvements, including a longer
-                      continuous battery life.
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-lg font-bold text-gray-900 dark:text-white">
-                      <span className="line-through"> $799,99 </span>
-                    </p>
-                    <p className="text-lg font-bold leading-tight text-red-600 dark:text-red-500">
-                      $499
-                    </p>
-                  </div>
-                  <div className="mt-6 flex items-center gap-2.5">
-                    <button
-                      type="button"
-                      className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white p-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z"
-                        ></path>
-                      </svg>
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex w-full items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium  text-white hover:bg-blue-800"
-                    >
-                      <svg
-                        className="-ms-2 me-2 h-5 w-5"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7h-1M8 7h-.688M13 5v4m-2-2h4"
-                        />
-                      </svg>
-                      Add to cart
-                    </button>
-                  </div>
-                </div>
-                <div className="space-y-6 overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                  <a href="#" className="overflow-hidden rounded">
-                    <img
-                      className="mx-auto h-44 w-44 dark:hidden"
-                      src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/apple-watch-light.svg"
-                      alt="image"
-                    />
-                    <img
-                      className="mx-auto hidden h-44 w-44 dark:block"
-                      src="https://i.ibb.co/ZVXRFk6/thumb.jpg"
-                      alt="image"
-                    />
-                  </a>
-                  <div>
-                    <a
-                      href="#"
-                      className="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white"
-                    >
-                      Branded Premium Basic Mesh Shorts
-                    </a>
-                    <p className="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">
-                      This generation has some improvements, including a longer
-                      continuous battery life.
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-lg font-bold text-gray-900 dark:text-white">
-                      <span className="line-through"> $1799,99 </span>
-                    </p>
-                    <p className="text-lg font-bold leading-tight text-red-600 dark:text-red-500">
-                      $1199
-                    </p>
-                  </div>
-                  <div className="mt-6 flex items-center gap-2.5">
-                    <button
-                      type="button"
-                      className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white p-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z"
-                        ></path>
-                      </svg>
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex w-full items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium  text-white hover:bg-blue-800"
-                    >
-                      <svg
-                        className="-ms-2 me-2 h-5 w-5"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7h-1M8 7h-.688M13 5v4m-2-2h4"
-                        />
-                      </svg>
-                      Add to cart
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
-            <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
-              <p className="text-xl font-semibold text-gray-900 dark:text-white">
-                Order summary
-              </p>
-
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <dl className="flex items-center justify-between gap-4">
-                    <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                      Original price
-                    </dt>
-                    <dd className="text-base font-medium text-gray-900 dark:text-white">
-                      $7,592.00
-                    </dd>
-                  </dl>
-
-                  <dl className="flex items-center justify-between gap-4">
-                    <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                      Savings
-                    </dt>
-                    <dd className="text-base font-medium text-green-600">
-                      -$299.00
-                    </dd>
-                  </dl>
-
-                  <dl className="flex items-center justify-between gap-4">
-                    <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                      Store Pickup
-                    </dt>
-                    <dd className="text-base font-medium text-gray-900 dark:text-white">
-                      $99
-                    </dd>
-                  </dl>
-
-                  <dl className="flex items-center justify-between gap-4">
-                    <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                      Tax
-                    </dt>
-                    <dd className="text-base font-medium text-gray-900 dark:text-white">
-                      $799
-                    </dd>
-                  </dl>
-                </div>
-
-                <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
-                  <dt className="text-base font-bold text-gray-900 dark:text-white">
-                    Total
-                  </dt>
-                  <dd className="text-base font-bold text-gray-900 dark:text-white">
-                    $8,191.00
-                  </dd>
-                </dl>
-              </div>
-
-              <a
-                href="#"
-                className="flex w-full items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800"
-              >
-                Proceed to Checkout
-              </a>
-
-              <div className="flex items-center justify-center gap-2">
-                <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  or{" "}
-                </span>
-                <a
-                  href="#"
-                  title=""
-                  className="inline-flex items-center gap-2 text-sm font-medium text-blue-700 underline hover:no-underline dark:text-blue-500"
-                >
-                  Continue Shopping
-                  <svg
-                    className="h-5 w-5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 12H5m14 0-4 4m4-4-4-4"
-                    />
-                  </svg>
-                </a>
-              </div>
-            </div>
-
-            <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
-              <form className="space-y-4">
-                <div>
-                  <label
-                    htmlFor="voucher"
-                    className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Do you have a voucher or gift card?
-                  </label>
-                  <input
-                    type="text"
-                    id="voucher"
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                    placeholder=""
-                    required
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="flex w-full items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800"
-                >
-                  Apply Code
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+					<Grid item xs={12} lg={4}>
+						<Paper sx={{ p: { xs: 2, sm: 3 } }}>
+							<Typography variant="h6" fontWeight="bold">
+								Order Summary
+							</Typography>
+							<Box mt={2}>
+								<Box
+									display="flex"
+									justifyContent="space-between"
+									mb={1}
+								>
+									<Typography variant="body2" color="text.secondary">
+										Original Price
+									</Typography>
+									<Typography variant="body2" fontWeight="medium">
+										$7,592.00
+									</Typography>
+								</Box>
+								<Box
+									display="flex"
+									justifyContent="space-between"
+									mb={1}
+								>
+									<Typography variant="body2" color="text.secondary">
+										Savings
+									</Typography>
+									<Typography
+										variant="body2"
+										color="success.main"
+										fontWeight="medium"
+									>
+										-$299.00
+									</Typography>
+								</Box>
+								<Box
+									display="flex"
+									justifyContent="space-between"
+									mb={1}
+								>
+									<Typography variant="body2" color="text.secondary">
+										Store Pickup
+									</Typography>
+									<Typography variant="body2" fontWeight="medium">
+										$99
+									</Typography>
+								</Box>
+								<Box
+									display="flex"
+									justifyContent="space-between"
+									mb={1}
+								>
+									<Typography variant="body2" color="text.secondary">
+										Tax
+									</Typography>
+									<Typography variant="body2" fontWeight="medium">
+										$799
+									</Typography>
+								</Box>
+								<Divider />
+								<Box
+									display="flex"
+									justifyContent="space-between"
+									mt={2}
+								>
+									<Typography variant="body1" fontWeight="bold">
+										Total
+									</Typography>
+									<Typography variant="body1" fontWeight="bold">
+										$8,191.00
+									</Typography>
+								</Box>
+							</Box>
+							<Button
+								variant="contained"
+								color="primary"
+								fullWidth
+								startIcon={<ShoppingCartIcon />}
+								sx={{ mt: 2 }}
+							>
+								Proceed to Checkout
+							</Button>
+							<Box
+								display="flex"
+								justifyContent="center"
+								alignItems="center"
+								mt={2}
+							>
+								<Typography variant="body2" color="text.secondary">
+									or
+								</Typography>
+								<Button
+									href="#"
+									startIcon={<ArrowForwardIcon />}
+									size="small"
+									sx={{ textDecoration: 'underline', ml: 1 }}
+								>
+									Continue Shopping
+								</Button>
+							</Box>
+						</Paper>
+						<Paper sx={{ p: { xs: 2, sm: 3 }, mt: 2 }}>
+							<Box component="form">
+								<Typography fontWeight="bold" variant="body2" mb={1}>
+									Do you have a voucher or gift card?
+								</Typography>
+								<TextField
+									id="voucher"
+									variant="outlined"
+									fullWidth
+									size="small"
+								/>
+								<Button variant="contained" fullWidth sx={{ mt: 2 }}>
+									Apply
+								</Button>
+							</Box>
+						</Paper>
+					</Grid>
+				</Grid>
+			</Container>
+		</Box>
+	);
 };
 
 export default CartProduct;
