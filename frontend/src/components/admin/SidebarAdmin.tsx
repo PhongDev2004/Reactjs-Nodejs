@@ -1,63 +1,63 @@
-import ShopTwoIcon from "@mui/icons-material/ShopTwo";
-import AddBoxIcon from "@mui/icons-material/AddBox";
-import CategoryIcon from "@mui/icons-material/Category";
-import AddHomeIcon from "@mui/icons-material/AddHome";
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import Divider from "@mui/material/Divider";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import InboxIcon from "@mui/icons-material/MoveToInbox";
+import MailIcon from "@mui/icons-material/Mail";
 import { Link } from "react-router-dom";
 
-const SidebarAdmin = () => {
+interface SidebarAdminProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const SidebarAdmin: React.FC<SidebarAdminProps> = ({ isOpen, onClose }) => {
+  const DrawerList = (
+    <Box sx={{ width: 250 }} role="presentation" onClick={onClose}>
+      <List>
+        {[
+          { name: "Dashboard", to: "/admin" },
+          { name: "Categories", to: "/categories" },
+          { name: "Send email", to: "/send-email" },
+          { name: "Inbox", to: "/inbox" },
+        ].map((item, index) => (
+          <ListItem key={index} disablePadding>
+            <Link to={item.to}>
+              <ListItemButton>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={item.name} />
+              </ListItemButton>
+            </Link>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {["Hihi", "Hehe", "Haha"].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+
   return (
-    <aside
-      id="logo-sidebar"
-      className="fixed top-0 left-0 z-40 md:w-64 h-screen pt-20 pb-40 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
-      aria-label="Sidebar"
-    >
-      <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
-        <ul
-          className="space-y-2 font-medium"
-          id="default-tab"
-          data-tabs-toggle="#product-data-view"
-          role="tablist"
-        >
-          <li role="presentation">
-            <Link
-              to="/admin"
-              type="button"
-              className="flex w-full items-center justify-start p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-            >
-              <ShopTwoIcon className="text-lg" />
-              <span className="ms-3 text-sm">Products</span>
-            </Link>
-          </li>
-          <li role="presentation">
-            <Link
-              to="/admin/categories"
-              className="flex w-full items-center justify-start p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-            >
-              <AddBoxIcon className="text-lg" />
-              <span className="ms-3 text-sm">Categories</span>
-            </Link>
-          </li>
-          <li role="presentation">
-            <Link
-              to="/categories"
-              className="flex w-full items-center justify-start p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-            >
-              <CategoryIcon className="text-lg" />
-              <span className="ms-3 text-sm">Cart</span>
-            </Link>
-          </li>
-          <li role="presentation">
-            <Link
-              to="/category"
-              className="flex w-full items-center justify-start p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-            >
-              <AddHomeIcon className="text-lg" />
-              <span className="ms-3 text-sm">Favorites</span>
-            </Link>
-          </li>
-        </ul>
-      </div>
-    </aside>
+    <Drawer open={isOpen} onClose={onClose}>
+      {DrawerList}
+    </Drawer>
   );
 };
 

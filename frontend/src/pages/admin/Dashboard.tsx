@@ -23,8 +23,9 @@ import AddIcon from "@mui/icons-material/Add";
 import { IProduct } from "src/interfaces/Product";
 import { getProducts, handleDeleteProduct } from "src/service/product";
 import Loading from "src/components/ui/Loading";
+import ConfirmDialog from "src/components/ui/ConfirmDialog";
+import toast from "react-hot-toast";
 
-// Styled components
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -47,15 +48,20 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const Dashboard = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [confirm, setConfirm] = useState(false);
+  const [idDelete, setIdDelete] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
   const itemsPerPage = 10;
 
   const onDelete = async (id: string) => {
-    const isConfirm = window.confirm("Are you sure?");
-    if (isConfirm) {
-      await handleDeleteProduct(id);
-      setProducts(products.filter((item) => item._id !== id));
-    }
+    await handleDeleteProduct(id);
+    setProducts(products.filter((item) => item._id !== id));
+    toast.success("Product deleted successfully!");
+  };
+
+  const handleConfirm = (id: string) => {
+    setConfirm(true);
+    setIdDelete(id);
   };
 
   useEffect(() => {
@@ -78,7 +84,7 @@ const Dashboard = () => {
 
   return (
     <Container maxWidth="xl">
-      <Typography variant="h3" fontWeight="bold" mb={3}>
+      <Typography variant="h4" fontWeight="bold" mb={3}>
         Admin Dashboard
       </Typography>
       <Stack direction="row" justifyContent="flex-end" mb={2}>
@@ -148,7 +154,7 @@ const Dashboard = () => {
                     </Link>
                     <IconButton
                       color="secondary"
-                      onClick={() => onDelete(product._id!)}
+                      onClick={() => handleConfirm(product._id!)} // Pass id to handleConfirm
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -158,6 +164,12 @@ const Dashboard = () => {
             ))}
           </TableBody>
         </Table>
+        <ConfirmDialog
+          confirm={confirm}
+          onConfirm={setConfirm}
+          onDelete={onDelete} // Pass onDelete function
+          idDelete={idDelete} // Pass idDelete state
+        />
       </TableContainer>
       <Pagination
         className="mt-4"
