@@ -1,3 +1,4 @@
+
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import SignIn from "./pages/Sign-in";
@@ -17,6 +18,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Blog from "./pages/Blog";
 import AccountPage from "./pages/AccountPage";
 
+
 function App() {
   return (
     <>
@@ -33,7 +35,8 @@ function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute requiredRole="admin" element={<LayoutAdmin />} />
+            // <ProtectedRoute requiredRole="admin"  />element={<LayoutAdmin />}
+            <LayoutAdmin />
           }
         >
           <Route index element={<Dashboard />} />

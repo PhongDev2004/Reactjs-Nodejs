@@ -1,16 +1,17 @@
-import { useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
-import * as Joi from "joi";
-import { useNavigate, useParams } from "react-router-dom";
-import toast from "react-hot-toast";
-import { getProduct, handleEditProduct } from "src/service/product";
-import { IProduct } from "src/interfaces/Product";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { joiResolver } from '@hookform/resolvers/joi';
+import * as Joi from 'joi';
+import { useNavigate, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { getProduct, handleEditProduct } from 'src/service/product';
+import { IProduct } from 'src/interfaces/Product';
+import { Button, Grid, TextField, Typography, Paper, Box } from '@mui/material';
 
 const schemaProduct = Joi.object({
   name: Joi.string().required().min(3).max(100),
   price: Joi.number().required().min(0),
-  description: Joi.string().allow(null, ""),
+  description: Joi.string().allow(null, ''),
   countInStock: Joi.number(),
   brand: Joi.string(),
   image: Joi.any().optional(),
@@ -22,10 +23,15 @@ const ProductEdit = () => {
   const [product, setProduct] = useState<IProduct | null>(null);
 
   useEffect(() => {
-    (async () => {
-      const data = await getProduct(id!);
-      setProduct(data.data.data);
-    })();
+    const fetchData = async () => {
+      try {
+        const data = await getProduct(id!);
+        setProduct(data.data.data);
+      } catch (error) {
+        console.error('Error fetching product:', error);
+      }
+    };
+    fetchData();
   }, [id]);
 
   const {
@@ -39,12 +45,12 @@ const ProductEdit = () => {
 
   useEffect(() => {
     if (product) {
-      setValue("name", product.name);
-      setValue("price", product.price);
-      setValue("description", product.description);
-      setValue("countInStock", product.countInStock);
-      setValue("brand", product.brand);
-      setValue("image", product.image);
+      setValue('name', product.name);
+      setValue('price', product.price);
+      setValue('description', product.description);
+      setValue('countInStock', product.countInStock);
+      setValue('brand', product.brand);
+      setValue('image', product.image);
     }
   }, [product, setValue]);
 
@@ -57,167 +63,67 @@ const ProductEdit = () => {
     });
   };
 
-  const onSubmit = async (data: IProduct) => {
-    if (data.image && (data.image as unknown as FileList).length > 0) {
-      const file = (data.image as unknown as FileList)[0];
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
       try {
-        data.image = await convertFileToBase64(file);
+        const base64Image = await convertFileToBase64(file);
+        setValue('image', base64Image);
       } catch (error) {
-        console.error("Failed to convert image to base64", error);
+        console.error('Failed to convert image to base64', error);
       }
     }
+  };
 
-    const dataOl = await handleEditProduct({ ...data, _id: id });
-    if (dataOl) {
-      toast.success("Product edited successfully!");
-      navigate("/admin");
+  const onSubmit = async (data: IProduct) => {
+    const updatedData = { ...data, _id: id };
+    try {
+      const updatedProduct = await handleEditProduct(updatedData);
+      if (updatedProduct) {
+        toast.success('Product edited successfully!');
+        navigate('/admin');
+      }
+    } catch (error) {
+      console.error('Error editing product:', error);
+      toast.error('Failed to edit product. Please try again.');
     }
   };
 
   return (
-    <section>
-      <div
-        className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
-        id="edit-product"
-        role="tabpanel"
-        aria-labelledby="edit-product-tab"
-      >
-        <section className="bg-white dark:bg-gray-900">
-          <div className="p-4 mx-auto max-w-2xl">
-            <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
-              Edit product
-            </h2>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              id="edit-product-form"
-              className="space-y-6"
-            >
-              <div className="grid md:grid-cols-2 grid-cols-1 gap-6">
-                <div>
-                  <label
-                    htmlFor="edit-name"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Product Name
-                  </label>
-                  <input
-                    type="text"
-                    id="edit-name"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-600 focus:border-slate-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
-                    placeholder="Type product name"
-                    {...register("name")}
-                  />
-                  {errors.name && (
-                    <span
-                      id="edit-name-error"
-                      className="error-message text-xs text-red-500"
-                    >
-                      {errors.name.message}
-                    </span>
-                  )}
-                </div>
-                <div className="w-full">
-                  <label
-                    htmlFor="edit-price"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Price
-                  </label>
-                  <input
-                    type="text"
-                    id="edit-price"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-600 focus:border-slate-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
-                    placeholder="$2999"
-                    {...register("price")}
-                  />
-                  {errors.price && (
-                    <span
-                      id="edit-price-error"
-                      className="error-message text-xs text-red-500"
-                    >
-                      {errors.price.message}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="grid md:grid-cols-2 grid-cols-1 gap-6">
-                <div>
-                  <label
-                    htmlFor="edit-stock"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Stock
-                  </label>
-                  <input
-                    type="number"
-                    id="edit-stock"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-600 focus:border-slate-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
-                    placeholder="12"
-                    {...register("countInStock")}
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="edit-brand"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Brand
-                  </label>
-                  <input
-                    type="text"
-                    id="edit-brand"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-600 focus:border-slate-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
-                    placeholder="Brand"
-                    {...register("brand")}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="edit-desc"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Description
-                </label>
-                <textarea
-                  id="edit-desc"
-                  rows={8}
-                  className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-slate-500 focus:border-slate-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
-                  placeholder="Your description here"
-                  {...register("description")}
-                ></textarea>
-              </div>
-              <div className="mt-4">
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Cover photo
-                </label>
-                <input
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-600 focus:border-slate-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
-                  id="file_input"
-                  type="file"
-                  {...register("image")}
-                />
-                {errors.image && (
-                  <span
-                    id="edit-image-error"
-                    className="error-message text-xs text-red-500"
-                  >
-                    {errors.image.message}
-                  </span>
-                )}
-              </div>
-              <button
-                id="edit-product-btn"
-                className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-slate-700 rounded-lg focus:ring-4 focus:ring-slate-200 dark:focus:ring-slate-900 hover:bg-slate-800"
-              >
-                Edit product
-              </button>
-            </form>
-          </div>
-        </section>
-      </div>
-    </section>
+    <Box component={Paper} p={4} mt={2}>
+      <Typography variant="h5" gutterBottom>
+        Edit Product
+      </Typography>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <TextField id="edit-name" label="Product Name" variant="outlined" fullWidth {...register('name')} error={!!errors.name} helperText={errors.name?.message} InputLabelProps={{ shrink: true }} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField id="edit-price" label="Price" variant="outlined" fullWidth {...register('price')} error={!!errors.price} helperText={errors.price?.message} InputLabelProps={{ shrink: true }} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField id="edit-stock" label="Stock" variant="outlined" fullWidth type="number" {...register('countInStock')} InputLabelProps={{ shrink: true }} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField id="edit-brand" label="Brand" variant="outlined" fullWidth {...register('brand')} InputLabelProps={{ shrink: true }} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField id="edit-desc" label="Description" variant="outlined" fullWidth multiline rows={4} {...register('description')} InputLabelProps={{ shrink: true }} />
+          </Grid>
+          <Grid item xs={12}>
+            <input id="file_input" type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
+            <label htmlFor="file_input">Cover photo</label>
+            <div>{product?.image && <img src={product.image} alt="Product" style={{ maxWidth: '100%', marginTop: '10px' }} />}</div>
+          </Grid>
+          <Grid item xs={12}>
+            <Button variant="contained" color="primary" type="submit">
+              Save Changes
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+    </Box>
   );
 };
 

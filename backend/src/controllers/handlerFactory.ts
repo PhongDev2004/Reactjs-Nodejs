@@ -1,22 +1,19 @@
-import { NextFunction, Request, Response } from "express";
-import { Model } from "mongoose";
-import catchAsync from "../Utils/catchAsync";
-import APIFeatures from "../Utils/apiFeatures";
-import cloudinary from "cloudinary";
+import { NextFunction, Request, Response } from 'express';
+import { Model } from 'mongoose';
+import catchAsync from '../Utils/catchAsync';
+import APIFeatures from '../Utils/apiFeatures';
+import cloudinary from 'cloudinary';
+import sharp from 'sharp';
 
 export const deleteOne = <T extends Model<any>>(Model: T) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const doc = await Model.findByIdAndDelete(req.params.id);
 
     if (!doc) {
-      return res
-        .status(404)
-        .json({ message: "No document found with that ID" });
+      return res.status(404).json({ message: 'No document found with that ID' });
     }
 
-    return res
-      .status(204)
-      .json({ message: "Successfully deleted", data: null });
+    return res.status(204).json({ message: 'Successfully deleted', data: null });
   });
 
 export const updateOne = <T extends Model<any>>(Model: T, validation: any) =>
@@ -25,7 +22,7 @@ export const updateOne = <T extends Model<any>>(Model: T, validation: any) =>
 
     if (error) {
       return res.status(400).json({
-        status: "fail",
+        status: 'fail',
         message: error.details[0].message,
       });
     }
@@ -39,13 +36,11 @@ export const updateOne = <T extends Model<any>>(Model: T, validation: any) =>
     });
 
     if (!doc) {
-      return res
-        .status(404)
-        .json({ message: "No document found with that ID" });
+      return res.status(404).json({ message: 'No document found with that ID' });
     }
 
     return res.status(200).json({
-      status: "success",
+      status: 'success',
       data: {
         data: doc,
       },
@@ -57,7 +52,7 @@ export const createOne = <T extends Model<any>>(Model: T, validation: any) =>
     const { error } = validation.validate(req.body);
     if (error) {
       return res.status(400).json({
-        status: "fail",
+        status: 'fail',
         message: error.details[0].message,
       });
     }
@@ -69,17 +64,14 @@ export const createOne = <T extends Model<any>>(Model: T, validation: any) =>
     const doc = await Model.create(req.body);
 
     res.status(201).json({
-      status: "success",
+      status: 'success',
       data: {
         data: doc,
       },
     });
   });
 
-export const getOne = <T extends Model<any>>(
-  Model: T,
-  populateOption?: string | string[]
-) =>
+export const getOne = <T extends Model<any>>(Model: T, populateOption?: string | string[]) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     let query = Model.findById(req.params.id);
     if (populateOption) query = query.populate(populateOption);
@@ -87,13 +79,11 @@ export const getOne = <T extends Model<any>>(
     const doc = await query;
 
     if (!doc) {
-      return res
-        .status(404)
-        .json({ message: "No document found with that ID" });
+      return res.status(404).json({ message: 'No document found with that ID' });
     }
 
     res.status(200).json({
-      status: "success",
+      status: 'success',
       data: {
         data: doc,
       },
@@ -114,7 +104,7 @@ export const getAll = <T extends Model<any>>(Model: T) =>
     const doc = await features.query;
 
     res.status(200).json({
-      status: "success",
+      status: 'success',
       results: doc.length,
       data: {
         data: doc,
@@ -122,11 +112,26 @@ export const getAll = <T extends Model<any>>(Model: T) =>
     });
   });
 
-const uploadImage = async (file: Express.Multer.File) => {
+export const uploadImage = async (file: Express.Multer.File) => {
   const image = file;
-  const base64Image = Buffer.from(image.buffer).toString("base64");
+  const base64Image = Buffer.from(image.buffer).toString('base64');
   const dataURI = `data:${image.mimetype};base64,${base64Image}`;
 
   const uploadResponse = await cloudinary.v2.uploader.upload(dataURI);
   return uploadResponse.url;
 };
+
+// export const uploadImage = async (file: Express.Multer.File) => {
+// 	const image = file;
+
+// 	// Compress the image using sharp
+// 	const compressedBuffer = await sharp(image.buffer)
+// 		.resize({ width: 1200 }) // Resize the image
+// 		.toBuffer();
+
+// 	const base64Image = Buffer.from(compressedBuffer).toString('base64');
+// 	const dataURI = `data:${image.mimetype};base64,${base64Image}`;
+
+// 	const uploadResponse = await cloudinary.v2.uploader.upload(dataURI);
+// 	return uploadResponse.url;
+// };

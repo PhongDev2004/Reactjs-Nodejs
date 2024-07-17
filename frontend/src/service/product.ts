@@ -1,9 +1,9 @@
-import { IProduct } from "src/interfaces/Product";
-import instance from "./api";
+import { IProduct } from 'src/interfaces/Product';
+import instance from './api';
 
 export const getProducts = async () => {
   try {
-    const { data } = await instance.get("/products");
+    const { data } = await instance.get('/products');
     return data;
   } catch (error) {
     console.log(error);
@@ -12,7 +12,7 @@ export const getProducts = async () => {
 
 export const getProduct = async (id: string) => {
   try {
-    const { data } = await instance.get("/products/" + id);
+    const { data } = await instance.get('/products/' + id);
     return data;
   } catch (error) {
     console.log(error);
@@ -21,7 +21,7 @@ export const getProduct = async (id: string) => {
 
 export const handleAddProduct = async (product: IProduct) => {
   try {
-    const { data } = await instance.post("/products", product);
+    const { data } = await instance.post('/products', product);
     return data;
   } catch (error) {
     console.log(error);

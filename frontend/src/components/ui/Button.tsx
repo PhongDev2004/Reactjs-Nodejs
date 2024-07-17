@@ -1,5 +1,5 @@
-import Button from "@mui/material/Button";
-import React from "react";
+import Button from '@mui/material/Button';
+import React from 'react';
 
 interface IconLabelButtons {
   endIcon?: React.ReactNode;
@@ -7,11 +7,7 @@ interface IconLabelButtons {
   className?: string;
 }
 
-const IconLabelButtons: React.FC<IconLabelButtons> = ({
-  endIcon,
-  title,
-  className,
-}) => {
+const IconLabelButtons: React.FC<IconLabelButtons> = ({ endIcon, title, className }) => {
   return (
     <Button variant="contained" endIcon={endIcon} className={className}>
       {title}

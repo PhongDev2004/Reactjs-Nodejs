@@ -1,5 +1,7 @@
+
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import { IProduct } from "../interfaces/Product";
+
 
 interface CartContextType {
   cart: IProduct[];
@@ -17,17 +19,13 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     setCart((prevCart) => [...prevCart, product]);
   };
 
-  return (
-    <CartContext.Provider value={{ cart, addToCart }}>
-      {children}
-    </CartContext.Provider>
-  );
+  return <CartContext.Provider value={{ cart, addToCart }}>{children}</CartContext.Provider>;
 };
 
 export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) {
-    throw new Error("useCart must be used within a CartProvider");
+    throw new Error('useCart must be used within a CartProvider');
   }
   return context;
 };

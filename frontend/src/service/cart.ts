@@ -1,17 +1,17 @@
-import instance from "./api";
+import instance from './api';
 
 export const getCart = async () => {
   try {
-    const { data } = await instance.get("/cart");
+    const { data } = await instance.get('/cart');
     return data;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const addToCart = async (productId: string, quantity: number) => {
+export const addToCart = async (productId: string | undefined, quantity: number) => {
   try {
-    const { data } = await instance.post("/cart", {
+    const { data } = await instance.post('/cart', {
       productId,
       quantity,
     });
@@ -30,10 +30,7 @@ export const removeFromCart = async (productId: string | undefined) => {
   }
 };
 
-export const updateCart = async (
-  productId: string | undefined,
-  quantity: number
-) => {
+export const updateCart = async (productId: string | undefined, quantity: number) => {
   try {
     const { data } = await instance.patch(`/cart`, {
       quantity,

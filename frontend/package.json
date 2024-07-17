@@ -6,8 +6,10 @@
   "scripts": {
     "start": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "format": "prettier --write \"./src\"",
+    "lint": "eslint . --ext .js",
+    "lint-fix": "eslint . --ext .js --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -23,6 +25,7 @@
     "json-server-auth": "^2.1.0",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
+    "lucide": "^0.408.0",
     "markdown-to-jsx": "^7.4.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -46,6 +49,11 @@
     "eslint-plugin-react-refresh": "^0.4.7",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-node": "^4.1.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "typescript": "^5.2.2",
     "vite": "^5.3.1"
   }

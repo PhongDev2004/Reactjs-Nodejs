@@ -4,38 +4,30 @@ import User from '../models/User';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { JWT_SECRET } from '../Utils/env';
 
-export const protect = catchAsync(
-	async (req: Request, res: Response, next: NextFunction) => {
-		let token;
+export const protect = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  let token;
 
-		if (
-			req.headers.authorization &&
-			req.headers.authorization.startsWith('Bearer')
-		) {
-			token = req.headers.authorization.split(' ')[1];
-		} else if (req.cookies.jwt) {
-			token = req.cookies.jwt;
-		}
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+  }
 
-		if (!token) {
-			return res.status(401).json({ error: 'You are not logged in' });
-		}
+  if (!token) {
+    return res.status(401).json({ error: 'You are not logged in' });
+  }
 
-		const decoded: JwtPayload = jwt.verify(
-			token,
-			JWT_SECRET as string
-		) as JwtPayload;
+  const decoded: JwtPayload = jwt.verify(token, JWT_SECRET as string) as JwtPayload;
 
-		const currentUser = await User.findById(decoded.id);
+  const currentUser = await User.findById(decoded.id);
 
-		if (!currentUser) {
-			return res.status(401).json({ error: 'The user does not exist' });
-		}
+  if (!currentUser) {
+    return res.status(401).json({ error: 'The user does not exist' });
+  }
 
-		req.user = currentUser;
-		next();
-	}
-);
+  req.user = currentUser;
+  next();
+});
 
 // export const isLoggedIn = async (
 // 	req: Request,
@@ -66,11 +58,11 @@ export const protect = catchAsync(
 // };
 
 export const restrictTo = (...roles: string[]) => {
-	return (req: Request, res: Response, next: NextFunction) => {
-		if (!roles.includes(req.user.role)) {
-			return res.status(403).json({ error: 'You do not have permission' });
-		}
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ error: 'You do not have permission' });
+    }
 
-		next();
-	};
+    next();
+  };
 };
