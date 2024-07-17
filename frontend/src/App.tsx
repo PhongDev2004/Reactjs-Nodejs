@@ -31,7 +31,8 @@ function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute requiredRole="admin" element={<LayoutAdmin />} />
+            // <ProtectedRoute requiredRole="admin"  />element={<LayoutAdmin />}
+            <LayoutAdmin />
           }
         >
           <Route index element={<Dashboard />} />

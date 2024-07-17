@@ -1,14 +1,48 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  Container,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  Pagination,
+  IconButton,
+  Stack,
+  Button,
+  tableCellClasses,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
-
-import { Link } from "react-router-dom";
-import Button from "src/components/ui/Button";
 import { IProduct } from "src/interfaces/Product";
-import { useEffect, useState } from "react";
 import { getProducts, handleDeleteProduct } from "src/service/product";
 import Loading from "src/components/ui/Loading";
-import Pagination from "@mui/material/Pagination";
+
+// Styled components
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
 
 const Dashboard = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -17,13 +51,11 @@ const Dashboard = () => {
   const itemsPerPage = 10;
 
   const onDelete = async (id: string) => {
-    (async () => {
-      const isConfirm = window.confirm("Are you sure?");
-      if (isConfirm) {
-        await handleDeleteProduct(id);
-        setProducts(products.filter((item) => item._id !== id && item));
-      }
-    })();
+    const isConfirm = window.confirm("Are you sure?");
+    if (isConfirm) {
+      await handleDeleteProduct(id);
+      setProducts(products.filter((item) => item._id !== id));
+    }
   };
 
   useEffect(() => {
@@ -42,107 +74,99 @@ const Dashboard = () => {
 
   const startIndex = (page - 1) * itemsPerPage;
   const visibleProducts = products.slice(startIndex, startIndex + itemsPerPage);
-
   const totalPages = Math.ceil(products.length / itemsPerPage);
 
   return (
-    <div>
-      <h3 className="font-bold text-3xl">Admin Dashboard</h3>
-      <div className="flex justify-end">
-        <Link to="/admin/product-add" className="mb-5">
-          <Button
-            className="font-extrabold"
-            title="Add new product"
-            endIcon={<AddIcon />}
-          ></Button>
+    <Container maxWidth="xl">
+      <Typography variant="h3" fontWeight="bold" mb={3}>
+        Admin Dashboard
+      </Typography>
+      <Stack direction="row" justifyContent="flex-end" mb={2}>
+        <Link to="/admin/product-add">
+          <Button variant="contained" startIcon={<AddIcon />}>
+            Add new product
+          </Button>
         </Link>
-      </div>
+      </Stack>
       <Loading isShow={loading} />
-      <div
-        className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
-        id="product-list"
-        role="tabpanel"
-        aria-labelledby="list-product-tab"
-      >
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th scope="col" className="px-6 py-3">
-                  Product name
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Price
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Stock
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  brand
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  numReviews
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  description
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody id="table-product-list">
-              {visibleProducts.map((product) => (
-                <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                  <td
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center space-x-3 w-[200px] md:w-[400px]"
-                  >
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Product name</StyledTableCell>
+              <StyledTableCell align="right">Price</StyledTableCell>
+              <StyledTableCell align="right">Stock</StyledTableCell>
+              <StyledTableCell align="right">Brand</StyledTableCell>
+              <StyledTableCell align="right">Num Reviews</StyledTableCell>
+              <StyledTableCell align="left">Description</StyledTableCell>
+              <StyledTableCell align="left">Action</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {visibleProducts.map((product) => (
+              <StyledTableRow key={product._id}>
+                <StyledTableCell component="th" scope="row">
+                  <Stack direction="row" alignItems="center" spacing={2}>
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="rounded-md w-8 h-8"
+                      style={{ width: 40, height: 40, borderRadius: "50%" }}
                     />
-                    <p className="line-clamp-1">{product.name}</p>
-                  </td>
-                  <td className="px-6 py-4">{product.price}</td>
-                  <td className="px-6 py-4">{product.countInStock}</td>
-                  <td className="px-6 py-4">{product.brand}</td>
-                  <td className="px-6 py-4">{product.numReviews}</td>
-                  <td className="px-6 py-4 truncate-3">
-                    {product.description}
-                  </td>
-                  <td className="px-6 py-4 flex flex-nowrap space-x-4">
-                    <Link to={`/admin/product-edit/${product._id}`}>
-                      <button
-                        className="font-medium text-blue-600 dark:text-blue-500"
-                        bg-red-500
-                      >
-                        <EditIcon className="edit-product-btn text-lg w-full" />
-                      </button>
-                    </Link>
-
-                    <button
-                      onClick={() => onDelete(product._id!)}
-                      className="font-medium text-red-600 dark:text-red-500"
+                    <Typography
+                      noWrap
+                      sx={{
+                        wordWrap: "break-word",
+                        width: "18rem",
+                      }}
                     >
-                      <DeleteIcon className="delete-product-btn text-lg" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                      {product.name}
+                    </Typography>
+                  </Stack>
+                </StyledTableCell>
+                <StyledTableCell align="right">{product.price}</StyledTableCell>
+                <StyledTableCell align="right">
+                  {product.countInStock}
+                </StyledTableCell>
+                <StyledTableCell align="right">{product.brand}</StyledTableCell>
+                <StyledTableCell align="right">
+                  {product.numReviews}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  <Typography
+                    noWrap
+                    sx={{ wordWrap: "break-word", width: "18rem" }}
+                  >
+                    {product.description}
+                  </Typography>
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  <Stack direction="row" spacing={1}>
+                    <Link to={`/admin/product-edit/${product._id}`}>
+                      <IconButton color="primary">
+                        <EditIcon />
+                      </IconButton>
+                    </Link>
+                    <IconButton
+                      color="secondary"
+                      onClick={() => onDelete(product._id!)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Stack>
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       <Pagination
-        className="mt-4 flex justify-end items-center"
+        className="mt-4"
         count={totalPages}
         color="primary"
         page={page}
         onChange={(event, value) => setPage(value)}
       />
-    </div>
+    </Container>
   );
 };
 
