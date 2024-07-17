@@ -1,8 +1,8 @@
-import * as React from "react";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import BlogPost from "./post1";
+import * as React from 'react';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import BlogPost from './post1';
 // import Markdown from "./markdown";
 
 interface MainProps {
@@ -18,7 +18,7 @@ export default function Main(props: MainProps) {
       xs={12}
       md={8}
       sx={{
-        "& .markdown": {
+        '& .markdown': {
           py: 3,
         },
       }}

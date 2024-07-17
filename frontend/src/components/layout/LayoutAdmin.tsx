@@ -1,8 +1,8 @@
-import { Fragment } from "react/jsx-runtime";
-import { Outlet } from "react-router-dom";
-import NavbarAdmin from "../admin/NavbarAdmin";
-import SidebarAdmin from "../admin/SidebarAdmin";
-import { useState } from "react";
+import { Fragment } from 'react/jsx-runtime';
+import { Outlet } from 'react-router-dom';
+import NavbarAdmin from '../admin/NavbarAdmin';
+import SidebarAdmin from '../admin/SidebarAdmin';
+import { useState } from 'react';
 
 const LayoutAdmin = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

@@ -1,16 +1,16 @@
-import { useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
-import * as Joi from "joi";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import { handleAddProduct } from "src/service/product";
-import { IProduct } from "src/interfaces/Product";
-import { Box, Button, TextField, Typography, Paper, Grid } from "@mui/material";
+import { useForm } from 'react-hook-form';
+import { joiResolver } from '@hookform/resolvers/joi';
+import * as Joi from 'joi';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { handleAddProduct } from 'src/service/product';
+import { IProduct } from 'src/interfaces/Product';
+import { Box, Button, TextField, Typography, Paper, Grid } from '@mui/material';
 
 const schemaProduct = Joi.object({
   name: Joi.string().required().min(3).max(100),
   price: Joi.number().required().min(0),
-  description: Joi.string().allow(null, ""),
+  description: Joi.string().allow(null, ''),
   countInStock: Joi.number(),
   brand: Joi.string(),
   image: Joi.any().optional(),
@@ -41,15 +41,15 @@ const ProductAdd = () => {
       try {
         data.image = await convertFileToBase64(file);
       } catch (error) {
-        console.error("Failed to convert image to base64", error);
+        console.error('Failed to convert image to base64', error);
       }
     }
 
     const newProduct = await handleAddProduct(data);
 
     if (newProduct) {
-      toast.success("Product added successfully!");
-      navigate("/admin");
+      toast.success('Product added successfully!');
+      navigate('/admin');
     }
   };
 
@@ -61,62 +61,23 @@ const ProductAdd = () => {
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              label="Product Name"
-              {...register("name")}
-              error={!!errors.name}
-              helperText={errors.name?.message}
-              variant="outlined"
-            />
+            <TextField fullWidth label="Product Name" {...register('name')} error={!!errors.name} helperText={errors.name?.message} variant="outlined" />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              label="Price"
-              {...register("price")}
-              error={!!errors.price}
-              helperText={errors.price?.message}
-              variant="outlined"
-              type="number"
-            />
+            <TextField fullWidth label="Price" {...register('price')} error={!!errors.price} helperText={errors.price?.message} variant="outlined" type="number" />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              label="Stock"
-              {...register("countInStock")}
-              error={!!errors.countInStock}
-              helperText={errors.countInStock?.message}
-              variant="outlined"
-              type="number"
-            />
+            <TextField fullWidth label="Stock" {...register('countInStock')} error={!!errors.countInStock} helperText={errors.countInStock?.message} variant="outlined" type="number" />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              label="Brand"
-              {...register("brand")}
-              error={!!errors.brand}
-              helperText={errors.brand?.message}
-              variant="outlined"
-            />
+            <TextField fullWidth label="Brand" {...register('brand')} error={!!errors.brand} helperText={errors.brand?.message} variant="outlined" />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Description"
-              {...register("description")}
-              error={!!errors.description}
-              helperText={errors.description?.message}
-              variant="outlined"
-              multiline
-              rows={4}
-            />
+            <TextField fullWidth label="Description" {...register('description')} error={!!errors.description} helperText={errors.description?.message} variant="outlined" multiline rows={4} />
           </Grid>
           <Grid item xs={12}>
             <Typography variant="subtitle1">Cover photo</Typography>
-            <input type="file" {...register("image")} />
+            <input type="file" {...register('image')} />
             {errors.image && (
               <Typography variant="caption" color="error">
                 {errors.image.message}

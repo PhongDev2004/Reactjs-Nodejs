@@ -1,30 +1,15 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import {
-  Container,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  Pagination,
-  IconButton,
-  Stack,
-  Button,
-  tableCellClasses,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import AddIcon from "@mui/icons-material/Add";
-import { IProduct } from "src/interfaces/Product";
-import { getProducts, handleDeleteProduct } from "src/service/product";
-import Loading from "src/components/ui/Loading";
-import ConfirmDialog from "src/components/ui/ConfirmDialog";
-import toast from "react-hot-toast";
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Pagination, IconButton, Stack, Button, tableCellClasses } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import AddIcon from '@mui/icons-material/Add';
+import { IProduct } from 'src/interfaces/Product';
+import { getProducts, handleDeleteProduct } from 'src/service/product';
+import Loading from 'src/components/ui/Loading';
+import ConfirmDialog from 'src/components/ui/ConfirmDialog';
+import toast from 'react-hot-toast';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -37,10 +22,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
+  '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
   },
-  "&:last-child td, &:last-child th": {
+  '&:last-child td, &:last-child th': {
     border: 0,
   },
 }));
@@ -56,7 +41,7 @@ const Dashboard = () => {
   const onDelete = async (id: string) => {
     await handleDeleteProduct(id);
     setProducts(products.filter((item) => item._id !== id));
-    toast.success("Product deleted successfully!");
+    toast.success('Product deleted successfully!');
   };
 
   const handleConfirm = (id: string) => {
@@ -113,16 +98,12 @@ const Dashboard = () => {
               <StyledTableRow key={product._id}>
                 <StyledTableCell component="th" scope="row">
                   <Stack direction="row" alignItems="center" spacing={2}>
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      style={{ width: 40, height: 40, borderRadius: "50%" }}
-                    />
+                    <img src={product.image} alt={product.name} style={{ width: 40, height: 40, borderRadius: '50%' }} />
                     <Typography
                       noWrap
                       sx={{
-                        wordWrap: "break-word",
-                        width: "18rem",
+                        wordWrap: 'break-word',
+                        width: '18rem',
                       }}
                     >
                       {product.name}
@@ -130,18 +111,11 @@ const Dashboard = () => {
                   </Stack>
                 </StyledTableCell>
                 <StyledTableCell align="right">{product.price}</StyledTableCell>
-                <StyledTableCell align="right">
-                  {product.countInStock}
-                </StyledTableCell>
+                <StyledTableCell align="right">{product.countInStock}</StyledTableCell>
                 <StyledTableCell align="right">{product.brand}</StyledTableCell>
+                <StyledTableCell align="right">{product.numReviews}</StyledTableCell>
                 <StyledTableCell align="right">
-                  {product.numReviews}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  <Typography
-                    noWrap
-                    sx={{ wordWrap: "break-word", width: "18rem" }}
-                  >
+                  <Typography noWrap sx={{ wordWrap: 'break-word', width: '18rem' }}>
                     {product.description}
                   </Typography>
                 </StyledTableCell>
@@ -171,13 +145,7 @@ const Dashboard = () => {
           idDelete={idDelete} // Pass idDelete state
         />
       </TableContainer>
-      <Pagination
-        className="mt-4"
-        count={totalPages}
-        color="primary"
-        page={page}
-        onChange={(event, value) => setPage(value)}
-      />
+      <Pagination className="mt-4" count={totalPages} color="primary" page={page} onChange={(event, value) => setPage(value)} />
     </Container>
   );
 };

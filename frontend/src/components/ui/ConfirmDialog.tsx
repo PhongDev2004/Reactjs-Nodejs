@@ -1,10 +1,10 @@
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { styled } from "@mui/material/styles";
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import { styled } from '@mui/material/styles';
 
 type ConfirmDialogProps = {
   confirm: boolean;
@@ -29,23 +29,16 @@ export default function ConfirmDialog({
       try {
         await onDelete(idDelete);
       } catch (error) {
-        console.error("Failed to delete product:", error);
+        console.error('Failed to delete product:', error);
       }
     }
   };
 
   return (
-    <Dialog
-      open={confirm}
-      onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
-      <DialogTitle id="alert-dialog-title">{"Delete Product"}</DialogTitle>
+    <Dialog open={confirm} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+      <DialogTitle id="alert-dialog-title">{'Delete Product'}</DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          Are you sure you want to delete this product?
-        </DialogContentText>
+        <DialogContentText id="alert-dialog-description">Are you sure you want to delete this product?</DialogContentText>
       </DialogContent>
       <DialogActions>
         <ButtonCancel onClick={handleClose}>Cancel</ButtonCancel>
@@ -58,13 +51,13 @@ export default function ConfirmDialog({
 }
 
 const ButtonOk = styled(Button)({
-  background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
+  background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
   border: 0,
   borderRadius: 10,
-  boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
-  color: "white",
+  boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+  color: 'white',
   height: 48,
-  padding: "0 20px",
+  padding: '0 20px',
 });
 
 const ButtonCancel = styled(Button)(
