@@ -13,6 +13,8 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Link } from "react-router-dom";
+import { useUser } from "src/context/UserContext";
+import toast from "react-hot-toast";
 
 const pages = [
   { name: "Home", to: "/" },
@@ -21,14 +23,8 @@ const pages = [
   { name: "Features", to: "features" },
 ];
 
-const settings = [
-  { name: "Profile", to: "profile" },
-  { name: "Account", to: "account" },
-  { name: "Dashboard", to: "login" },
-  { name: "Logout", to: "logout" },
-];
-
 function Header() {
+  const { setUser, isLoggedIn } = useUser();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -50,7 +46,18 @@ function Header() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
+  const handleLogout = () => {
+    document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    setUser(null);
+    toast.success("Logout successfully!");
+  };
+  const settings = isLoggedIn
+    ? [{ name: "Login", to: "/login" }]
+    : [
+        { name: "Profile", to: "/profile" },
+        { name: "Account", to: "/account" },
+        { name: "Logout", action: handleLogout },
+      ];
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -203,10 +210,15 @@ function Header() {
               {settings.map((setting) => (
                 <MenuItem key={setting.to} onClick={handleCloseUserMenu}>
                   <Typography textAlign="center">
-                    <Link to={setting.to}>{setting.name}</Link>
+                    {setting.to ? (
+                      <Link to={setting.to}>{setting.name}</Link>
+                    ) : (
+                      <button onClick={setting.action}>{setting.name}</button>
+                    )}
                   </Typography>
                 </MenuItem>
               ))}
+              {}
             </Menu>
           </Box>
         </Toolbar>
