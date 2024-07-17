@@ -7,13 +7,13 @@ const router = express.Router();
 
 const storage = multer.memoryStorage();
 const upload = multer({
-	storage: multer.memoryStorage(),
-	limits: { fileSize: Infinity },
+  storage: multer.memoryStorage(),
+  limits: { fileSize: Infinity },
 });
 
 router
-	.route('/:id')
-	.get(upload.single('image'), protect, getUser)
-	.patch(upload.single('image'), protect, updateUser);
+  .route('/:id')
+  .get(upload.single('image'), protect, getUser)
+  .patch(upload.single('image'), protect, updateUser);
 
 export default router;

@@ -1,12 +1,6 @@
 import Product from '../models/Product';
 import { createProductValidation } from '../validations/product';
-import {
-	createOne,
-	deleteOne,
-	getAll,
-	getOne,
-	updateOne,
-} from './handlerFactory';
+import { createOne, deleteOne, getAll, getOne, updateOne } from './handlerFactory';
 
 export const getAllProducts = getAll(Product);
 
