@@ -1,9 +1,16 @@
 import express from 'express';
 import { protect, restrictTo } from '../middlewares/auth';
-import { getUser } from '../controllers/userController';
+import { getUser, updateUser } from '../controllers/userController';
+import multer from 'multer';
 
 const router = express.Router();
 
-router.route('/:id').get(protect, getUser);
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+router
+	.route('/:id')
+	.get(upload.single('image'), protect, getUser)
+	.patch(upload.single('image'), protect, updateUser);
 
 export default router;
