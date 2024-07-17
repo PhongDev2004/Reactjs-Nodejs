@@ -6,7 +6,10 @@ import multer from 'multer';
 const router = express.Router();
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({
+	storage: multer.memoryStorage(),
+	limits: { fileSize: Infinity },
+});
 
 router
 	.route('/:id')
