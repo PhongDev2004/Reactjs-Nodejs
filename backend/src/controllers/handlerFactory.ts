@@ -3,6 +3,7 @@ import { Model } from 'mongoose';
 import catchAsync from '../Utils/catchAsync';
 import APIFeatures from '../Utils/apiFeatures';
 import cloudinary from 'cloudinary';
+import sharp from 'sharp';
 
 export const deleteOne = <T extends Model<any>>(Model: T) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -130,3 +131,18 @@ export const uploadImage = async (file: Express.Multer.File) => {
 	const uploadResponse = await cloudinary.v2.uploader.upload(dataURI);
 	return uploadResponse.url;
 };
+
+// export const uploadImage = async (file: Express.Multer.File) => {
+// 	const image = file;
+
+// 	// Compress the image using sharp
+// 	const compressedBuffer = await sharp(image.buffer)
+// 		.resize({ width: 1200 }) // Resize the image
+// 		.toBuffer();
+
+// 	const base64Image = Buffer.from(compressedBuffer).toString('base64');
+// 	const dataURI = `data:${image.mimetype};base64,${base64Image}`;
+
+// 	const uploadResponse = await cloudinary.v2.uploader.upload(dataURI);
+// 	return uploadResponse.url;
+// };

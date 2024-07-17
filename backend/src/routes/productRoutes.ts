@@ -1,18 +1,22 @@
-import express from "express";
+import express from 'express';
 import {
-  createProduct,
-  deleteProduct,
-  getAllProducts,
-  getProduct,
-  updateProduct,
-} from "../controllers/productController";
-import multer from "multer";
-import { protect } from "../middlewares/auth";
+	createProduct,
+	deleteProduct,
+	getAllProducts,
+	getProduct,
+	updateProduct,
+} from '../controllers/productController';
+import multer from 'multer';
+import { protect } from '../middlewares/auth';
 
 const router = express.Router();
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+
+const upload = multer({
+	storage,
+	limits: { fileSize: 1024 * 1024 * 5 },
+});
 
 // router
 //   .route("/")
@@ -26,14 +30,14 @@ const upload = multer({ storage });
 //   .delete(protect, restrictTo("admin"), deleteProduct);
 
 router
-  .route("/")
-  .get(getAllProducts)
-  .post(upload.single("image"), createProduct);
+	.route('/')
+	.get(getAllProducts)
+	.post(upload.single('image'), createProduct);
 
 router
-  .route("/:id")
-  .get(getProduct)
-  .patch(upload.single("image"), updateProduct)
-  .delete(deleteProduct);
+	.route('/:id')
+	.get(getProduct)
+	.patch(upload.single('image'), updateProduct)
+	.delete(deleteProduct);
 
 export default router;
