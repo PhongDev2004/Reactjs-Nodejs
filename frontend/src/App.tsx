@@ -1,25 +1,24 @@
-
-import { Route, Routes } from "react-router-dom";
-import "./App.css";
-import SignIn from "./pages/Sign-in";
-import SignUp from "./pages/Sign-up";
-import ProductList from "./components/Products";
-import Layout from "./components/layout/Layout";
-import ProductDetail from "./components/ProductDetail";
-import CartProduct from "./components/CartProduct";
-import LayoutAdmin from "./components/layout/LayoutAdmin";
-import Dashboard from "./pages/admin/Dashboard";
-import NotFound from "./pages/NotFound";
-import ProductAdd from "./pages/admin/ProductAdd";
-import ProductEdit from "./pages/admin/ProductEdit";
-import CategoriesList from "./pages/admin/CategoriesList";
-import CategoriesAdd from "./pages/admin/CategoriesAdd";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Blog from "./pages/Blog";
-import AccountPage from "./pages/AccountPage";
-
+import { Route, Routes } from 'react-router-dom';
+import './App.css';
+import SignIn from './pages/Sign-in';
+import SignUp from './pages/Sign-up';
+import ProductList from './components/Products';
+import Layout from './components/layout/Layout';
+import ProductDetail from './components/ProductDetail';
+import CartProduct from './components/CartProduct';
+import LayoutAdmin from './components/layout/LayoutAdmin';
+import Dashboard from './pages/admin/Dashboard';
+import NotFound from './pages/NotFound';
+import ProductAdd from './pages/admin/ProductAdd';
+import ProductEdit from './pages/admin/ProductEdit';
+import CategoriesList from './pages/admin/CategoriesList';
+import CategoriesAdd from './pages/admin/CategoriesAdd';
+import ProtectedRoute from './components/ProtectedRoute';
+import Blog from './pages/Blog';
+import AccountPage from './pages/AccountPage';
 
 function App() {
+
   return (
     <>
       <Routes>
@@ -35,8 +34,8 @@ function App() {
         <Route
           path="/admin"
           element={
-            // <ProtectedRoute requiredRole="admin"  />element={<LayoutAdmin />}
-            <LayoutAdmin />
+            <ProtectedRoute requiredRole="admin" element={<LayoutAdmin />} />
+            // <LayoutAdmin />
           }
         >
           <Route index element={<Dashboard />} />

@@ -8,6 +8,7 @@ import ToastProvider from "./components/ui/Toast-provider.tsx";
 import { LoadingProvider } from "./context/LoadingErrorContext.tsx";
 import { FlashErrorProvider } from "./context/FlashError.tsx";
 import { UserProvider } from "./context/UserContext.tsx";
+import { CartProvider } from "./context/CartContext.tsx";
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -15,11 +16,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <ToastProvider />
       <UserProvider>
-        <FlashErrorProvider>
-          <LoadingProvider>
-            <App />
-          </LoadingProvider>
-        </FlashErrorProvider>
+        <CartProvider>
+          <FlashErrorProvider>
+            <LoadingProvider>
+              <App />
+            </LoadingProvider>
+          </FlashErrorProvider>
+        </CartProvider>
       </UserProvider>
     </BrowserRouter>
   </React.StrictMode>

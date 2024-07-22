@@ -7,7 +7,7 @@ import {
   updateProduct,
 } from '../controllers/productController';
 import multer from 'multer';
-import { protect } from '../middlewares/auth';
+import { protect, restrictTo } from '../middlewares/auth';
 
 const router = express.Router();
 
@@ -19,15 +19,15 @@ const upload = multer({
 });
 
 // router
-//   .route("/")
+//   .route('/')
 //   .get(getAllProducts)
-//   .post(upload.single("image"), protect, restrictTo("admin"), createProduct);
+//   .post(upload.single('image'), protect, restrictTo('admin'), createProduct);
 
 // router
-//   .route("/:id")
+//   .route('/:id')
 //   .get(getProduct)
-//   .patch(upload.single("image"), protect, restrictTo("admin"), updateProduct)
-//   .delete(protect, restrictTo("admin"), deleteProduct);
+//   .patch(upload.single('image'), protect, restrictTo('admin'), updateProduct)
+//   .delete(protect, restrictTo('admin'), deleteProduct);
 
 router.route('/').get(getAllProducts).post(upload.single('image'), createProduct);
 

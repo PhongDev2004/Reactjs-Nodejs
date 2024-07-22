@@ -9,9 +9,11 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import { useCart } from 'src/context/CartContext';
 
 const CartProduct = () => {
   const [products, setProducts] = useState<ProductCart[]>([]);
+  const { setQuantity } = useCart();
   useEffect(() => {
     (async () => {
       try {
@@ -25,8 +27,9 @@ const CartProduct = () => {
 
   const handleRemove = async (productId: string | undefined) => {
     try {
-      const response = await removeFromCart(productId);
-      setProducts(products.filter((product) => product.productId._id !== productId));
+      await removeFromCart(productId);
+      setProducts(products.filter((product) => product?.productId._id !== productId));
+      setQuantity((prev) => Number(prev) - 1);
     } catch (error) {
       console.log(error);
     }
@@ -34,10 +37,10 @@ const CartProduct = () => {
 
   const handleIncrease = async (productId: string | undefined) => {
     try {
-      const product = products.find((product) => product.productId._id === productId);
+      const product = products.find((product) => product?.productId._id === productId);
       if (product) {
-        const response = await updateCart(productId, product.quantity + 1);
-        setProducts(products.map((product) => (product.productId._id === productId ? { ...product, quantity: product.quantity + 1 } : product)));
+        await updateCart(productId, product.quantity + 1);
+        setProducts(products.map((product) => (product?.productId._id === productId ? { ...product, quantity: product.quantity + 1 } : product)));
       }
     } catch (error) {
       console.log(error);
@@ -46,13 +49,14 @@ const CartProduct = () => {
 
   const handleDecrease = async (productId: string | undefined) => {
     try {
-      const product = products.find((product) => product.productId._id === productId);
+      const product = products.find((product) => product?.productId._id === productId);
       if (product) {
-        const response = await updateCart(productId, product.quantity - 1);
+        await updateCart(productId, product.quantity - 1);
         if (product.quantity === 1) {
+          setQuantity((prev) => Number(prev) - 1);
           return handleRemove(productId);
         }
-        setProducts(products.map((product) => (product.productId._id === productId ? { ...product, quantity: product.quantity - 1 } : product)));
+        setProducts(products.map((product) => (product?.productId._id === productId ? { ...product, quantity: product.quantity - 1 } : product)));
       }
     } catch (error) {
       console.log(error);
@@ -69,11 +73,11 @@ const CartProduct = () => {
         <Grid container spacing={{ xs: 2, md: 3 }} mt={{ xs: 0, sm: 1 }}>
           <Grid item xs={12} lg={8}>
             {products.map((product) => (
-              <Paper key={product.productId._id} sx={{ mb: 2, p: { xs: 2, md: 3 } }}>
+              <Paper key={product?.productId._id} sx={{ mb: 2, p: { xs: 2, md: 3 } }}>
                 <Grid container spacing={2} alignItems="center">
                   <Grid item xs={2}>
                     <a href="#">
-                      <img src={product.productId.image} alt="image" style={{ width: '100%' }} />
+                      <img src={product?.productId.image} alt="image" style={{ width: '100%' }} />
                     </a>
                   </Grid>
                   <Grid
@@ -88,7 +92,7 @@ const CartProduct = () => {
                   >
                     <Box>
                       <Typography variant="body1" fontWeight="medium" fontSize={14}>
-                        {product.productId.name}
+                        {product?.productId.name}
                       </Typography>
                       <Box mt={1} sx={{ display: 'flex' }}>
                         <Button
@@ -107,7 +111,7 @@ const CartProduct = () => {
                           startIcon={<DeleteOutlineIcon />}
                           color="error"
                           size="small"
-                          onClick={() => handleRemove(product.productId._id)}
+                          onClick={() => handleRemove(product?.productId._id)}
                           sx={{
                             fontSize: 10,
                             display: 'flex',
@@ -119,7 +123,7 @@ const CartProduct = () => {
                       </Box>
                     </Box>
                     <Box display="flex" alignItems="center" mt={1}>
-                      <IconButton onClick={() => handleDecrease(product.productId._id)} size="small">
+                      <IconButton onClick={() => handleDecrease(product?.productId._id)} size="small">
                         <RemoveIcon />
                       </IconButton>
                       <TextField
@@ -133,12 +137,12 @@ const CartProduct = () => {
                           style: { textAlign: 'center' },
                         }}
                       />
-                      <IconButton onClick={() => handleIncrease(product.productId._id)} size="small">
+                      <IconButton onClick={() => handleIncrease(product?.productId._id)} size="small">
                         <AddIcon />
                       </IconButton>
                     </Box>
                     <Typography variant="body1" fontWeight="bold" textAlign="center">
-                      ${product.productId.price * product.quantity}
+                      ${product?.productId.price * product.quantity}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -239,7 +243,7 @@ const CartProduct = () => {
                           startIcon={<AddShoppingCartIcon />}
                           fullWidth
                           size="small"
-                          // sx={{ padding: '5px' }}
+                        // sx={{ padding: '5px' }}
                         >
                           Add to cart
                         </Button>
