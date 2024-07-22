@@ -47,7 +47,7 @@ const schemaLogin = zod.object({
 });
 
 export default function SignIn() {
-  const { user, setUser } = useUser();
+  const { setUser, setIsLoggedIn } = useUser();
   const navigate = useNavigate();
   const {
     register,
@@ -59,10 +59,12 @@ export default function SignIn() {
 
   const onSubmit = async (data: IUser) => {
     const response = await loginUser(data);
+    console.log(response);
 
     if (response) {
       document.cookie = `jwt=${response.token}`;
-      setUser(data);
+      setUser(response.data.user);
+      setIsLoggedIn(true);
       toast.success("Login successfully!");
       navigate("/");
     }

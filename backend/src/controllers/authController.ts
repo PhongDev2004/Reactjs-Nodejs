@@ -6,14 +6,14 @@ import User from '../models/User';
 import bcrypt from 'bcryptjs';
 import { loginValidation, registerValidation } from '../validations/auth';
 
-const signToken = (id: string) => {
-  return jwt.sign({ id }, JWT_SECRET as string, {
+const signToken = (id: string, role: string) => {
+  return jwt.sign({ id, role }, JWT_SECRET as string, {
     expiresIn: '90d',
   });
 };
 
 const createSendToken = (user: any, statusCode: number, res: Response) => {
-  const token = signToken(user._id);
+  const token = signToken(user._id, user.role);
 
   const cookieOptions = {
     expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
@@ -84,9 +84,10 @@ export const login = catchAsync(async (req: Request, res: Response, next: NextFu
 
 export const logout = (req: Request, res: Response) => {
   res.cookie('jwt', 'loggedout', {
-    expires: new Date(Date.now() + 10 * 1000),
+    expires: new Date(Date.now() + 5 * 1000),
     httpOnly: true,
   });
+
   res.status(200).json({ status: 'success' });
 };
 

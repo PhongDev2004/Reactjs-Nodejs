@@ -20,6 +20,15 @@ export const registerUser = async (user: IUser) => {
   }
 };
 
+export const logoutUser = async () => {
+  try {
+    const { data } = await instance.post('/auth/logout');
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getUser = async (id: string) => {
   try {
     const { data } = await instance.get(`/users/${id}`);
@@ -63,9 +72,7 @@ export const isAdmin = async (requiredRole: string | undefined): Promise<boolean
   const decodedToken = decodeJwt(token);
   if (!decodedToken) return false;
 
-  const decoded = jwtDecode(token) as JwtPayload & { id: string };
-  const { data } = await getUser(decoded.id);
-  return data.data.role === requiredRole;
+  const decoded = jwtDecode<CustomJwtPayload>(token) as CustomJwtPayload & { id: string };
+  return decoded.role === requiredRole;
 };
 
-// export const checkPermissionUser = async (user: IUser) => {};

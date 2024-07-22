@@ -1,5 +1,6 @@
 import instance from './api';
 
+
 export const getCart = async () => {
   try {
     const { data } = await instance.get('/cart');
