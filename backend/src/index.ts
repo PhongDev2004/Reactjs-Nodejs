@@ -12,6 +12,9 @@ import authRouter from './routes/authRoutes';
 import productRouter from './routes/productRoutes';
 import cartRouter from './routes/cartRoutes';
 import userRouter from './routes/userRoutes';
+import favoriteRouter from './routes/favouriteRoutes';
+import orderRouter from './routes/orderRoutes';
+import ApiError from './Utils/ApiError';
 import { v2 as cloudinary } from 'cloudinary';
 
 cloudinary.config({
@@ -36,6 +39,21 @@ app.use('/api/auth', authRouter);
 app.use('/api/products', productRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/users', userRouter);
+app.use('/api/favorites', favoriteRouter);
+app.use('/api/orders', orderRouter);
+
+app.use(
+  (err: ApiError, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const statusCode = err.statusCode || 500;
+    const message = err.message || 'Internal Server Error';
+
+    res.status(statusCode).json({
+      status: 'error',
+      statusCode,
+      message,
+    });
+  }
+);
 
 app.listen(PORT, (): void => {
   connectDB();
