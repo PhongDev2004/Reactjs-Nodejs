@@ -1,11 +1,13 @@
 
-import React, { createContext, useState, useContext, ReactNode } from "react";
-import { IProduct } from "../interfaces/Product";
+import React, { createContext, useState, useContext, ReactNode, useEffect } from "react";
+import { ICart } from "src/interfaces/Cart";
+import { getCart } from "src/service/cart";
 
 
 interface CartContextType {
-  cart: IProduct[];
-  addToCart: (product: IProduct) => void;
+  cart: ICart | null;
+  quantity: number | string;
+  setQuantity: React.Dispatch<React.SetStateAction<number | string>>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -13,13 +15,22 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [cart, setCart] = useState<IProduct[]>([]);
+  const [cart, setCart] = useState<ICart | null>(null);
+  const [quantity, setQuantity] = useState<number | string>(0);
 
-  const addToCart = (product: IProduct) => {
-    setCart((prevCart) => [...prevCart, product]);
-  };
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await getCart();
+        setCart(response.data);
+        setQuantity(response.data.result);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
 
-  return <CartContext.Provider value={{ cart, addToCart }}>{children}</CartContext.Provider>;
+  return <CartContext.Provider value={{ cart, quantity, setQuantity }}>{children}</CartContext.Provider>;
 };
 
 export const useCart = () => {

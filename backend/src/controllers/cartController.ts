@@ -106,13 +106,10 @@ export const updateQuantity = catchAsync(
     const userId = req.user._id;
     const { productId, quantity } = req.body;
 
-    const cart = await Cart.findOne({ userId });
+    let cart = await Cart.findOne({ userId });
 
     if (!cart) {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Cart not found',
-      });
+      cart = await Cart.create({ userId, products: [] });
     }
 
     const product = cart.products.find((p) => p.productId?.toString() === productId);
