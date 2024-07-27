@@ -24,12 +24,40 @@ import { useLoading } from 'src/context/LoadingErrorContext';
 import { useFlashError } from 'src/context/FlashError';
 import Alert from '@mui/material/Alert';
 import CloseIcon from '@mui/icons-material/Close';
+
+import { Button, Chip, Divider, Tooltip, Stack, styled, useTheme } from '@mui/material';
+
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz'; // Import SwapHoriz icon
+
 const ProductList = () => {
+  const [isHovered, setIsHovered] = React.useState(false);
+  const theme = useTheme();
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const StyledCard = styled(Card)(({ theme }) => ({
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+    transition: 'box-shadow 0.3s ease-in-out',
+    '&:hover': {
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+      cursor: 'pointer',
+    },
+  }));
+
   const [products, setProducts] = React.useState<IProduct[]>([]);
   // const [loading, setLoading] = React.useState<boolean>(false);
   const [page, setPage] = React.useState<number>(1);
   const [searchTerm, setSearchTerm] = React.useState<string>('');
-  const itemsPerPage = 12;
+  const itemsPerPage = 4;
   const { isLoading, setLoading } = useLoading();
   const { error, setError, clearError } = useFlashError();
   React.useEffect(() => {
@@ -86,7 +114,7 @@ const ProductList = () => {
                 <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                   {visibleProducts?.map((product) => (
                     <Grid item xs={2} sm={4} md={3} lg={3} key={product._id}>
-                      <Card>
+                      <StyledCard onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
                         <Link to={`/product/${product._id}`}>
                           <CardMedia component="img" height="194" image={product.image} alt={product.name} />
                         </Link>
@@ -110,7 +138,72 @@ const ProductList = () => {
                             <IconLabelButtons title="Buy now" endIcon={<LocalMallIcon />} />
                           </div>
                         </CardActions>
-                      </Card>
+                        {isHovered && (
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              width: '100%',
+                              height: '100%',
+                              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              transition: 'opacity 0.3s ease-in-out',
+                              opacity: 1,
+                              zIndex: 10,
+                              padding: theme.spacing(2),
+                              boxSizing: 'border-box',
+                            }}
+                          >
+                            <Button
+                              variant="contained"
+                              color="inherit" // Use 'inherit' to apply custom colors
+                              startIcon={<AddShoppingCartIcon />}
+                              sx={{
+                                backgroundColor: 'white',
+                                color: '#c1a08d', // Light brown color
+
+                                marginBottom: theme.spacing(2),
+                                transition: 'background-color 0.3s ease-in-out',
+                                '&:hover': {
+                                  backgroundColor: '#f5f5f5', // Optional: change hover color
+                                  color: '#B88E2F', // Ensure text color remains light brown on hover
+                                },
+                              }}
+                            >
+                              Add to Cart
+                            </Button>
+                            <Stack direction="row" spacing={2} alignItems="center">
+                              <Tooltip title="Share">
+                                <Stack direction="row" spacing={0} alignItems="center">
+                                  <IconButton aria-label="share">
+                                    <ShareIcon sx={{ color: 'white' }} />
+                                  </IconButton>
+                                  <Typography variant="body2" color="white">
+                                    Share
+                                  </Typography>
+                                </Stack>
+                              </Tooltip>
+                              <IconButton aria-label="swap">
+                                <SwapHorizIcon sx={{ color: 'white' }} />
+                              </IconButton>
+                              <Tooltip title="Like">
+                                <Stack direction="row" spacing={0} alignItems="center">
+                                  <IconButton aria-label="like">
+                                    <FavoriteIcon sx={{ color: 'white' }} />
+                                  </IconButton>
+                                  <Typography variant="body2" color="white">
+                                    Like
+                                  </Typography>
+                                </Stack>
+                              </Tooltip>
+                            </Stack>
+                          </Box>
+                        )}
+                      </StyledCard>
                     </Grid>
                   ))}
                 </Grid>
