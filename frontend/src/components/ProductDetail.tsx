@@ -5,9 +5,10 @@ import { getProduct } from '../service/product';
 import Loading from './ui/Loading';
 import { addToCart } from 'src/service/cart';
 import toast from 'react-hot-toast';
-import { Box, Container, Grid, Typography, Button, SvgIcon, Input, List, ListItem } from '@mui/material';
+import { Box, Container, Grid, Typography, Button, SvgIcon, Input, List, ListItem, CardMedia, Stack, TextField, Chip, Divider, Rating, CardContent, Tooltip, IconButton } from '@mui/material';
 import { useCart } from 'src/context/CartContext';
-
+import { FacebookShareButton, LinkedinShareButton, TwitterShareButton } from 'react-share';
+import { FacebookIcon, LinkedinIcon, TwitterIcon } from 'react-share';
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState<IProduct | null>(null);
@@ -53,25 +54,42 @@ const ProductDetail = () => {
     <Box mx="auto" my={5} position="relative">
       <Container maxWidth="xl">
         <Loading isShow={loading} />
+        <Box
+          sx={{
+            backgroundColor: '#F9F1E7', // Màu kem
+            color: '#6D4C41', // Màu nâu
+            padding: 1, // Khoảng cách xung quanh
+            borderRadius: 1, // Bo góc
+            mb: 2,
+          }}
+        >
+          <Typography variant="subtitle1" color="inherit" m={2}>
+            Clothing {'>'} Menswear
+          </Typography>
+        </Box>
         <Grid container spacing={4}>
-          <Grid item xs={12} lg={6}>
-            <Box display="flex" justifyContent="center" height="100%">
-              <img
-                src={product?.image}
-                alt={product?.name}
-                style={{
-                  maxHeight: '100%',
-                  objectFit: 'contain',
-                }}
-              />
+          <Grid item xs={12} md={6}>
+            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+              <Stack direction="column" spacing={1} sx={{}}>
+                <Box>
+                  <img src={product?.image} alt={product?.name} height="50" width="250" style={{ objectFit: 'cover' }} />
+                </Box>
+                <Box>
+                  <img src={product?.image} alt={product?.name} height="" width="200" style={{ objectFit: 'cover' }} />
+                </Box>
+                <Box>
+                  <img src={product?.image} alt={product?.name} height="10" width="250" style={{ objectFit: 'cover' }} />
+                </Box>
+              </Stack>
+              <Box sx={{ flexGrow: 1, ml: 2 }}>
+                <CardMedia component="img" height="600" image={product?.image || ''} alt={product?.name || ''} sx={{ objectFit: 'cover' }} />
+              </Box>
             </Box>
           </Grid>
+
           <Grid item xs={12} lg={6}>
             <Box display="flex" alignItems="center" height="100%">
               <Box width="100%" maxWidth="xl">
-                <Typography variant="subtitle1" color="primary" mb={2}>
-                  Clothing / Menswear
-                </Typography>
                 <Typography
                   variant="h4"
                   component="h2"
@@ -176,67 +194,95 @@ const ProductDetail = () => {
                 <Typography variant="h6" mb={2} sx={{ fontWeight: 'medium' }}>
                   Size
                 </Typography>
-                <Box pb={2} borderBottom={1} borderColor="grey.100">
+                <Box pb={2}>
                   <Grid container spacing={1} maxWidth="md">
                     {['S', 'M', 'L', 'XL', 'XXL'].map((size) => (
                       <Grid item key={size}>
-                        <Button variant="outlined" fullWidth>
+                        <Button
+                          variant="contained" // Thay đổi từ 'outlined' thành 'contained'
+                          fullWidth
+                          sx={{
+                            backgroundColor: '#FAF3E0', // Màu kem
+                            color: 'black', // Màu chữ nâu
+                            border: 'none', // Loại bỏ đường viền
+                            '&:hover': {
+                              backgroundColor: '#B88E2F',
+                              color: '#ffff',
+                            },
+                          }}
+                        >
                           {size}
                         </Button>
                       </Grid>
                     ))}
                   </Grid>
                 </Box>
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  border={1}
-                  px={1}
-                  borderRadius={10}
-                  mt={2}
-                  sx={{
-                    width: 'fit-content',
-                    borderColor: '#ccc',
-                  }}
-                >
-                  <Button
-                    onClick={handleIncrease}
-                    sx={{
-                      minWidth: 0,
-                      padding: 1,
-                      height: 'objectFit',
-                      textAlign: 'center',
-                    }}
-                  >
-                    <svg className="stroke-gray-900 group-hover:stroke-black" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M16.5 11H5.5" stroke="" strokeWidth="1.6" stroke-linecap="round" />
-                      <path d="M16.5 11H5.5" stroke="" stroke-opacity="0.2" strokeWidth="1.6" stroke-linecap="round" />
-                      <path d="M16.5 11H5.5" stroke="" stroke-opacity="0.2" strokeWidth="1.6" stroke-linecap="round" />
-                    </svg>
-                  </Button>
-                  <Input
-                    value={quantity}
-                    readOnly
-                    sx={{
-                      textAlign: 'center',
-                      mx: 3,
-                      width: 40,
-                    }}
-                    inputProps={{
-                      style: { textAlign: 'center' },
-                    }}
-                  />
-                  <Button onClick={handleReduce} sx={{ minWidth: 0, padding: 1 }}>
-                    <svg className="stroke-gray-900 group-hover:stroke-black" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M11 5.5V16.5M16.5 11H5.5" stroke="#9CA3AF" strokeWidth="1.6" stroke-linecap="round" />
-                      <path d="M11 5.5V16.5M16.5 11H5.5" stroke="black" stroke-opacity="0.2" strokeWidth="1.6" stroke-linecap="round" />
-                      <path d="M11 5.5V16.5M16.5 11H5.5" stroke="black" stroke-opacity="0.2" strokeWidth="1.6" stroke-linecap="round" />
-                    </svg>
-                  </Button>
-                </Box>
-                <Grid container spacing={2} my={1} alignItems="center">
-                  <Grid item marginLeft="auto" xs={6}>
-                    <Button fullWidth variant="outlined" onClick={() => handleAddToCart(id, quantity)}>
+
+                <Grid container spacing={1} my={1} alignItems="center">
+                  <Grid item marginLeft="auto" xs={3}>
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      border={1}
+                      borderRadius={10}
+                      mt={0}
+                      sx={{
+                        width: 'fit-content',
+                        borderColor: '#ccc',
+                      }}
+                    >
+                      <Button
+                        onClick={handleIncrease}
+                        sx={{
+                          minWidth: 0,
+
+                          height: 'objectFit',
+                          textAlign: 'center',
+                        }}
+                      >
+                        <svg className="stroke-gray-900 group-hover:stroke-black" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M16.5 11H5.5" stroke="" strokeWidth="1.6" stroke-linecap="round" />
+                          <path d="M16.5 11H5.5" stroke="" stroke-opacity="0.2" strokeWidth="1.6" stroke-linecap="round" />
+                          <path d="M16.5 11H5.5" stroke="" stroke-opacity="0.2" strokeWidth="1.6" stroke-linecap="round" />
+                        </svg>
+                      </Button>
+                      <Input
+                        value={quantity}
+                        readOnly
+                        sx={{
+                          textAlign: 'center',
+                          mx: 1,
+                          width: 30,
+                        }}
+                        inputProps={{
+                          style: { textAlign: 'center' },
+                        }}
+                      />
+                      <Button onClick={handleReduce} sx={{ minWidth: 0 }}>
+                        <svg className="stroke-gray-900 group-hover:stroke-black" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M11 5.5V16.5M16.5 11H5.5" stroke="#9CA3AF" strokeWidth="1.6" stroke-linecap="round" />
+                          <path d="M11 5.5V16.5M16.5 11H5.5" stroke="black" stroke-opacity="0.2" strokeWidth="1.6" stroke-linecap="round" />
+                          <path d="M11 5.5V16.5M16.5 11H5.5" stroke="black" stroke-opacity="0.2" strokeWidth="1.6" stroke-linecap="round" />
+                        </svg>
+                      </Button>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={4.5}>
+                    <Button
+                      fullWidth
+                      variant="outlined"
+                      onClick={() => handleAddToCart(id, quantity)}
+                      sx={{
+                        color: 'black',
+                        borderColor: 'black',
+                        '&:hover': {
+                          color: 'white',
+                          backgroundColor: 'black',
+                        },
+                        borderWidth: 2,
+                        backgroundColor: 'white',
+                      }}
+                    >
                       <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shopping-cart me-2">
                         <circle cx={8} cy={21} r={1} />
                         <circle cx={19} cy={21} r={1} />
@@ -245,8 +291,21 @@ const ProductDetail = () => {
                       Add to cart
                     </Button>
                   </Grid>
-                  <Grid item xs={6}>
-                    <Button fullWidth variant="contained">
+                  <Grid item xs={4.5}>
+                    <Button
+                      fullWidth
+                      variant="outlined"
+                      sx={{
+                        color: 'black',
+                        borderColor: 'black',
+                        '&:hover': {
+                          color: 'white',
+                          backgroundColor: 'black',
+                        },
+                        borderWidth: 2,
+                        backgroundColor: 'white',
+                      }}
+                    >
                       <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-credit-card me-2">
                         <rect width={20} height={14} x={2} y={5} rx={2} />
                         <line x1={2} x2={22} y1={10} y2={10} />
@@ -255,6 +314,32 @@ const ProductDetail = () => {
                     </Button>
                   </Grid>
                 </Grid>
+                <Divider sx={{ my: 6 }} />
+                <Stack spacing={1}>
+                  <Typography variant="caption" gutterBottom>
+                    SKU : SS001
+                  </Typography>
+                  <Typography variant="caption" gutterBottom>
+                    Category : Sofas
+                  </Typography>
+                  <Typography variant="caption" gutterBottom>
+                    Tags : Sofa, Chair, Home, Shop
+                  </Typography>
+                  <Typography variant="caption" gutterBottom>
+                    Share:
+                  </Typography>
+                  <Stack direction="row" spacing={1}>
+                    <FacebookShareButton url="https://www.example.com">
+                      <FacebookIcon size={32} round />
+                    </FacebookShareButton>
+                    <LinkedinShareButton url="https://www.example.com">
+                      <LinkedinIcon size={32} round />
+                    </LinkedinShareButton>
+                    <TwitterShareButton url="https://www.example.com">
+                      <TwitterIcon size={32} round />
+                    </TwitterShareButton>
+                  </Stack>
+                </Stack>
               </Box>
             </Box>
           </Grid>
