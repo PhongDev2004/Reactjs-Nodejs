@@ -16,16 +16,17 @@ import CategoriesAdd from './pages/admin/CategoriesAdd';
 import ProtectedRoute from './components/ProtectedRoute';
 import Blog from './pages/Blog';
 import AccountPage from './pages/AccountPage';
+import NewProducts from './components/NewProduct';
+import ProductPage from './components/test2';
 
 function App() {
-
   return (
     <>
       <Routes>
         <Route path="/login" element={<SignIn />} />
         <Route path="/register" element={<SignUp />} />
         <Route path="/" element={<Layout />}>
-          <Route index element={<ProductList />} />
+          <Route index element={<NewProducts />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/post" element={<Blog />} />
           <Route path="/cart" element={<CartProduct />} />
