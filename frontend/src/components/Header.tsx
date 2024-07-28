@@ -7,16 +7,19 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from 'src/context/UserContext';
 import toast from 'react-hot-toast';
 import { logoutUser } from 'src/service/auth';
 import { useCart } from 'src/context/CartContext';
+import PersonIcon from '@mui/icons-material/Person';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import SearchIcon from '@mui/icons-material/Search';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { Badge } from '@mui/material';
 
 const pages = [
   { name: 'Home', to: '/' },
@@ -28,6 +31,7 @@ const pages = [
 function Header() {
   const { setUser, isLoggedIn, setIsLoggedIn } = useUser();
   const { quantity } = useCart();
+  const naviage = useNavigate();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -51,6 +55,7 @@ function Header() {
     document.cookie = 'jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     setUser(null);
     setIsLoggedIn(false);
+    // naviage('/');
     toast.success('Logout successfully!');
   };
   const settings = [
@@ -58,32 +63,36 @@ function Header() {
     { name: 'Account', to: '/account' },
     { name: 'Logout', action: handleLogout },
   ];
+
   return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Link to="/">
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              sx={{
-                mr: 2,
-                display: { xs: 'none', md: 'flex' },
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
-            >
-              BEEMELY
-            </Typography>
-          </Link>
+    <AppBar position="sticky" sx={{ backgroundColor: '#fff' }}>
+      <Container maxWidth="lg">
+        <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'space-between', py: 2 }}>
+
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <img src="./logo.png" className='w-10 mr-1' alt="" />
+            <Link to="/">
+              <Typography
+                variant="h5"
+                noWrap
+                component="a"
+                sx={{
+                  mr: 2,
+                  display: { xs: 'none', md: 'flex' },
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  color: '#000',
+                  textDecoration: 'none',
+                  margin: 0
+                }}
+              >
+                Furniro
+              </Typography>
+            </Link>
+          </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton size="large" aria-label="account of current user" aria-controls="menu-appbar" aria-haspopup="true" onClick={handleOpenNavMenu} color="inherit">
+            <IconButton size="large" aria-label="account of current user" aria-controls="menu-appbar" aria-haspopup="true" onClick={handleOpenNavMenu} sx={{ color: '#000' }}>
               <MenuIcon />
             </IconButton>
             <Menu
@@ -104,9 +113,9 @@ function Header() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page.to} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">
+              {pages.map((page, index) => (
+                <MenuItem key={index} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center" color='#000'>
                     <Link to={page.to}>{page.name}</Link>
                   </Typography>
                 </MenuItem>
@@ -114,6 +123,7 @@ function Header() {
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+
           <Typography
             variant="h5"
             noWrap
@@ -125,54 +135,44 @@ function Header() {
               flexGrow: 1,
               fontFamily: 'monospace',
               fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
+              color: '#000',
               textDecoration: 'none',
             }}
           >
-            Beemely
+            Furniro
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button key={page.to} onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white', display: 'block' }}>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 8, fontFamily: 'monospace' }}>
+            {pages.map((page, index) => (
+              <Typography key={index} onClick={handleCloseNavMenu} sx={{ my: 2, color: '#000', fontWeight: 700, display: 'block' }}>
                 <Link to={page.to}>{page.name}</Link>
-              </Button>
+              </Typography>
             ))}
           </Box>
 
+
           {isLoggedIn ? (
             <>
-              <Box
-                sx={{
-                  flexGrow: 0,
-                  paddingRight: '2.2rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Link to="/cart">
-                  <div className="relative py-2">
-                    <div className="t-0 absolute left-3">{Number(quantity) > 0 && <p className="flex h-2 w-2 items-center justify-center rounded-full bg-red-500 p-3 text-xs text-white">{quantity}</p>}</div>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="file: mt-4 h-6 w-6">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-                      />
-                    </svg>
-                  </div>
-                </Link>
-              </Box>
-
               <Box sx={{ flexGrow: 0 }}>
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                  </IconButton>
-                </Tooltip>
+                <Box sx={{ display: 'flex', gap: 4 }}>
+                  <Tooltip title="Open settings">
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                      <PersonIcon sx={{ color: '#000' }} />
+                    </IconButton>
+                  </Tooltip>
+                  <Link to="/">
+                    <SearchIcon sx={{ color: '#000' }} />
+                  </Link>
+                  <Link to="/">
+                    <FavoriteBorderIcon sx={{ color: '#000' }} />
+                  </Link>
+                  <Link to="/cart">
+                    <Badge badgeContent={quantity} color="error">
+                      <ShoppingCartIcon sx={{ color: '#000' }} />
+                    </Badge>
+                  </Link>
+                </Box>
                 <Menu
-                  sx={{ mt: '45px' }}
+                  sx={{ mt: '30px' }}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
                   anchorOrigin={{
@@ -187,8 +187,8 @@ function Header() {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
-                  {settings.map((setting) => (
-                    <MenuItem key={setting.to} onClick={handleCloseUserMenu}>
+                  {settings.map((setting, index) => (
+                    <MenuItem key={index} onClick={handleCloseUserMenu}>
                       <Typography textAlign="center">{setting.to ? <Link to={setting.to}>{setting.name}</Link> : <button onClick={setting.action}>{setting.name}</button>}</Typography>
                     </MenuItem>
                   ))}
@@ -198,12 +198,14 @@ function Header() {
             </>
           ) : (
             <>
-              <Link to="/login" className="btn border-solid border-2 box-border text-white py-1 px-4 rounded-sm font-medium me-2">
-                Login
-              </Link>
-              <Link to="/register" className="btn border-solid border-2 bg-white text-sky-600 py-1 px-4 rounded-sm font-medium">
-                Register
-              </Link>
+              <Box>
+                <Link style={{ color: '#B88E2F' }} to="/register" className="btn border-solid border me-1 bg-white text-sky-600 py-1 px-4 rounded-sm font-medium">
+                  Register
+                </Link>
+                <Link to="/login" className="btn border-solid border-2 box-border text-white py-1 px-4 rounded-sm font-medium bg-[#B88E2F]">
+                  Login
+                </Link>
+              </Box>
             </>
           )}
         </Toolbar>

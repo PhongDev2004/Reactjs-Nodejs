@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "vite",
+    "dev": "concurrently \"vite\" \"json-server --watch db.json --middlewares ./node_modules/json-server-auth\" --port 5000",
     "build": "tsc -b && vite build",
     "format": "prettier --write \"./src\"",
     "lint": "eslint . --ext .js",

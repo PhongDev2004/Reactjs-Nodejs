@@ -65,7 +65,8 @@ export const isAuthenticated = (): boolean => {
   return true;
 };
 
-export const isAdmin = async (requiredRole: string | undefined): Promise<boolean> => {
+export const isAdmin = async (requiredRole?: string | undefined): Promise<boolean> => {
+  if (!requiredRole) return true;
   const token = getJwt();
   if (!token) return false;
 

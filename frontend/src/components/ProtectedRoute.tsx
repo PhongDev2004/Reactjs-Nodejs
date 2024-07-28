@@ -1,6 +1,7 @@
 import React from 'react';
 import toast from 'react-hot-toast';
 import { Navigate } from 'react-router-dom';
+import { useUser } from 'src/context/UserContext';
 import { isAdmin, isAuthenticated } from 'src/service/auth';
 
 interface ProtectedRouteProps {
@@ -8,12 +9,14 @@ interface ProtectedRouteProps {
   element: React.ReactNode;
 }
 
-// Convert the component to use async/await properly with React's useEffect and useState
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, requiredRole }) => {
   const [isAuthorized, setIsAuthorized] = React.useState<boolean | null>(null);
+  const { isLoggedIn, setIsLoggedIn } = useUser();
 
   React.useEffect(() => {
     const checkAuthorization = async () => {
+      setIsLoggedIn(isAuthenticated());
+
       if (!isAuthenticated()) {
         setIsAuthorized(false);
         return;
@@ -28,6 +31,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, requiredRole }
 
   if (isAuthorized === null) {
     return null;
+  }
+
+  if (!isLoggedIn) {
+    toast.error('Please log in to access this page');
+    return <Navigate to=".." />;
   }
 
   if (!isAuthorized) {
