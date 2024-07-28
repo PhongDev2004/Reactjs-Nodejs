@@ -17,16 +17,16 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Blog from './pages/Blog';
 import AccountPage from './pages/AccountPage';
 import Checkout from './pages/Checkout';
+import Homepage from './pages/Homepage';
 
 function App() {
-
   return (
     <>
       <Routes>
         <Route path="/login" element={<SignIn />} />
         <Route path="/register" element={<SignUp />} />
         <Route path="/" element={<Layout />}>
-          <Route index element={<ProductList />} />
+          <Route index element={<Homepage />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/post" element={<Blog />} />
           <Route path="/cart" element={<ProtectedRoute element={<CartProduct />} />} />
