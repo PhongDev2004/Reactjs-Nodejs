@@ -2,10 +2,10 @@ import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import SignIn from './pages/Sign-in';
 import SignUp from './pages/Sign-up';
-import ProductList from './components/Products';
+import ProductList from './pages/Homepage';
 import Layout from './components/layout/Layout';
 import ProductDetail from './components/ProductDetail';
-import CartProduct from './components/CartProduct';
+import CartProduct from './pages/Cart';
 import LayoutAdmin from './components/layout/LayoutAdmin';
 import Dashboard from './pages/admin/Dashboard';
 import NotFound from './pages/NotFound';
@@ -16,6 +16,7 @@ import CategoriesAdd from './pages/admin/CategoriesAdd';
 import ProtectedRoute from './components/ProtectedRoute';
 import Blog from './pages/Blog';
 import AccountPage from './pages/AccountPage';
+import Checkout from './pages/Checkout';
 
 function App() {
 
@@ -28,14 +29,14 @@ function App() {
           <Route index element={<ProductList />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/post" element={<Blog />} />
-          <Route path="/cart" element={<CartProduct />} />
-          <Route path="/profile" element={<AccountPage />} />
+          <Route path="/cart" element={<ProtectedRoute element={<CartProduct />} />} />
+          <Route path="/checkout" element={<ProtectedRoute element={<Checkout />} />} />
+          <Route path="/profile" element={<ProtectedRoute element={<AccountPage />} />} />
         </Route>
         <Route
           path="/admin"
           element={
             <ProtectedRoute requiredRole="admin" element={<LayoutAdmin />} />
-            // <LayoutAdmin />
           }
         >
           <Route index element={<Dashboard />} />

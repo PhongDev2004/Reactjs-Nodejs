@@ -13,7 +13,7 @@
   "author": "PhongLB",
   "license": "ISC",
   "dependencies": {
-    "cloudinary": "^2.2.0",
+    "cloudinary": "^2.3.0",
     "concurrently": "^6.2.1"
   }
 }
