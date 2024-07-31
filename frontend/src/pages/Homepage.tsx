@@ -57,7 +57,6 @@ const Homepage = () => {
     }
   }
 
-
   return (
     <>
       <Banner />
