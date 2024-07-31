@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 
 const Cart = () => {
   const [products, setProducts] = useState<ProductCart[]>([]);
-  const { setQuantity } = useCart();
+  const { cart, setQuantity } = useCart();
   useEffect(() => {
     (async () => {
       try {
@@ -20,7 +20,7 @@ const Cart = () => {
         console.log(error);
       }
     })();
-  }, []);
+  }, [cart]);
 
   const handleRemove = async (productId: string | undefined) => {
     try {

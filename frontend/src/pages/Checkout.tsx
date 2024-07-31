@@ -1,5 +1,6 @@
 import { Box, Button, Container, Divider, FormControl, Grid, Input, InputLabel, List, ListItem, Typography } from "@mui/material"
 import HeaderPage from "src/components/HeaderPage"
+import Testimonial from "src/components/Testimonial"
 
 const Checkout = () => {
    return (
@@ -101,6 +102,7 @@ const Checkout = () => {
                </Box>
             </Box>
          </Container >
+         <Testimonial />
       </>
    )
 }

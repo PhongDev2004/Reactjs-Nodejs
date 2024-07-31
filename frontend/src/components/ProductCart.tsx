@@ -13,9 +13,10 @@ import { Link } from 'react-router-dom';
 type Props = {
    product: IProduct;
    handleAddToCart: (productId: string | undefined, e: React.MouseEvent<HTMLButtonElement>) => void;
+   handleAddToFav: (productId: string | undefined, e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-export default function ProductCard({ product, handleAddToCart }: Props) {
+export default function ProductCard({ product, handleAddToCart, handleAddToFav }: Props) {
    const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
       const target = e.currentTarget;
       const overlay = target.querySelector('.overlay') as HTMLElement;
@@ -60,7 +61,7 @@ export default function ProductCard({ product, handleAddToCart }: Props) {
                         <SyncAltIcon fontSize='small' sx={{ mr: 0.5 }} /> Compare
                      </Button>
 
-                     <Button sx={{ display: 'flex', alignItems: 'center', color: '#fff', fontSize: '12px', fontWeight: 600 }}>
+                     <Button onClick={(e) => handleAddToFav(product._id, e)} sx={{ display: 'flex', alignItems: 'center', color: '#fff', fontSize: '12px', fontWeight: 600 }}>
                         <FavoriteBorderIcon fontSize='small' sx={{ mr: 0.5 }} /> Like
                      </Button>
                   </Box>

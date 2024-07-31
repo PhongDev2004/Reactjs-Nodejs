@@ -1,13 +1,12 @@
-
 import React, { createContext, useState, useContext, ReactNode, useEffect } from "react";
 import { ICart } from "src/interfaces/Cart";
 import { getCart } from "src/service/cart";
-
 
 interface CartContextType {
   cart: ICart | null;
   quantity: number | string;
   setQuantity: React.Dispatch<React.SetStateAction<number | string>>;
+  setCart: React.Dispatch<React.SetStateAction<ICart | null>>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -30,7 +29,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     })();
   }, []);
 
-  return <CartContext.Provider value={{ cart, quantity, setQuantity }}>{children}</CartContext.Provider>;
+  return <CartContext.Provider value={{ cart, setCart, quantity, setQuantity }}>{children}</CartContext.Provider>;
 };
 
 export const useCart = () => {

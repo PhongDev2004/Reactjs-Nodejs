@@ -1,10 +1,9 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import SignIn from './pages/Sign-in';
+// import SignIn from './pages/Sign-in';
 import SignUp from './pages/Sign-up';
-import ProductList from './pages/Homepage';
 import Layout from './components/layout/Layout';
-import ProductDetail from './components/ProductDetail';
+import ProductDetail from './pages/ProductDetail';
 import CartProduct from './pages/Cart';
 import LayoutAdmin from './components/layout/LayoutAdmin';
 import Dashboard from './pages/admin/Dashboard';
@@ -23,7 +22,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/login" element={<SignIn />} />
+        {/* <Route path="/login" element={<SignIn />} /> */}
         <Route path="/register" element={<SignUp />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Homepage />} />
