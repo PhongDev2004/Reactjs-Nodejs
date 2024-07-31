@@ -15,6 +15,7 @@ import ProductCard from '../components/ProductCart';
 import { useCart } from 'src/context/CartContext';
 import { addToCart } from 'src/service/cart';
 import toast from 'react-hot-toast';
+import { addToFavorite } from 'src/service/liked';
 const Homepage = () => {
   const [products, setProducts] = React.useState<IProduct[]>([]);
   const { isLoading, setLoading } = useLoading();
@@ -45,6 +46,16 @@ const Homepage = () => {
     }
     setQuantity(response.data.result);
   };
+
+  const handleAddToFav = async (productId: string | undefined, e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const response = await addToFavorite(productId);
+
+    if (response.status === 'success') {
+      toast.success('Add to favorite successfully!');
+    }
+  }
 
 
   return (
@@ -90,7 +101,7 @@ const Homepage = () => {
 
               {products.slice(0, 8).map((product) => (
                 <Grid item xs={3} key={product._id}>
-                  <ProductCard handleAddToCart={handleAddToCart} product={product} />
+                  <ProductCard handleAddToCart={handleAddToCart} product={product} handleAddToFav={handleAddToFav} />
                 </Grid>
               ))}
             </Grid>

@@ -9,6 +9,7 @@ import { LoadingProvider } from "./context/LoadingErrorContext.tsx";
 import { FlashErrorProvider } from "./context/FlashError.tsx";
 import { UserProvider } from "./context/UserContext.tsx";
 import { CartProvider } from "./context/CartContext.tsx";
+import { LikedProvider } from "./context/LikedContext.tsx";
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -16,13 +17,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <ToastProvider />
       <UserProvider>
-        <CartProvider>
-          <FlashErrorProvider>
-            <LoadingProvider>
-              <App />
-            </LoadingProvider>
-          </FlashErrorProvider>
-        </CartProvider>
+        <LikedProvider>
+          <CartProvider>
+            <FlashErrorProvider>
+              <LoadingProvider>
+                <App />
+              </LoadingProvider>
+            </FlashErrorProvider>
+          </CartProvider>
+        </LikedProvider>
       </UserProvider>
     </BrowserRouter>
   </React.StrictMode>

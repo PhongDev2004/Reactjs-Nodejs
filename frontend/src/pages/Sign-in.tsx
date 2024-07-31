@@ -1,43 +1,20 @@
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import * as React from 'react';
+import * as zod from "zod";
 import { useForm } from "react-hook-form";
 import { IUser } from "src/interfaces/User";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as zod from "zod";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { loginUser } from "src/service/auth";
 import { useUser } from "src/context/UserContext";
-
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="/">
-        Your Website
-      </Link>
-      {new Date().getFullYear()}
-    </Typography>
-  );
-}
-
-const defaultTheme = createTheme();
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
+import { Typography } from '@mui/material';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import GoogleIcon from '@mui/icons-material/Google';
 
 const schemaLogin = zod.object({
   email: zod.string().email({ message: "Invalid email address" }),
@@ -45,14 +22,18 @@ const schemaLogin = zod.object({
     .string()
     .min(6, { message: "Password must be at least 6 characters long" }),
 });
+export interface LoginDialogProps {
+  open: boolean;
+  handleClose: () => void;
+}
 
-export default function SignIn() {
+export default function LoginDialog({ open, handleClose }: LoginDialogProps) {
   const { setUser, setIsLoggedIn } = useUser();
-  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<IUser>({
     resolver: zodResolver(schemaLogin),
   });
@@ -66,7 +47,8 @@ export default function SignIn() {
       setUser(response.data.user);
       setIsLoggedIn(true);
       toast.success("Login successfully!");
-      navigate("/");
+      handleClose();
+      reset();
     }
     try {
     } catch (error) {
@@ -76,81 +58,57 @@ export default function SignIn() {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <Box
-            onSubmit={handleSubmit(onSubmit)}
-            component="form"
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              autoComplete="email"
-              autoFocus
-              {...register("email")}
-              error={!!errors.email}
-              helperText={errors.email ? errors.email.message : ""}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              {...register("password")}
-              error={!!errors.password}
-              helperText={errors.password ? errors.password.message : ""}
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="/" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
-      </Container>
-    </ThemeProvider>
+    <React.Fragment>
+      <Dialog
+        fullWidth
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          component: 'form',
+          onSubmit: handleSubmit(onSubmit),
+        }}
+        sx={{ p: 2 }}
+      >
+        <DisabledByDefaultIcon onClick={handleClose} sx={{ m: 2, ml: 'auto', mb: 0, cursor: 'pointer' }} />
+        <Typography textAlign='center' fontWeight='bold' color='#B88E2F' fontSize={24} p={0}>Login</Typography>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Email Address"
+            type="email"
+            fullWidth
+            variant="standard"
+            sx={{ mb: 2 }}
+            {...register("email")}
+            error={!!errors.email}
+            helperText={errors.email ? errors.email.message : ""}
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Password"
+            type="password"
+            fullWidth
+            variant="standard"
+            sx={{ mb: 2 }}
+            {...register("password")}
+            error={!!errors.password}
+            helperText={errors.password ? errors.password.message : ""}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button variant='contained' >
+            <FacebookIcon sx={{ mr: 1 }} />
+            Facebook
+          </Button>
+          <Button variant='text' type='submit' sx={{ backgroundColor: '#F9F1E7', color: '#000', fontWeight: 700, px: 3 }}>Login</Button>
+          <Button variant='text' sx={{ backgroundColor: '#fff', color: '#000', fontWeight: 700, px: 3, border: '1px solid black' }}>
+            <GoogleIcon fontSize='small' sx={{ mr: 1 }} />
+            Google
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment >
   );
 }

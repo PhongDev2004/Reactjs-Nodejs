@@ -1,8 +1,8 @@
-import { Box, Container, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 
 const Testimonial = () => {
    return (
-      <Container maxWidth="xl" sx={{ backgroundColor: '#FAF3EA', py: 10 }}>
+      <Box sx={{ backgroundColor: '#FAF3EA', py: 10, width: '100%' }}>
          <Grid container spacing={2}>
             <Grid item xs={3} display='flex' justifyContent='center'>
                <Box display="flex" alignItems="center">
@@ -41,7 +41,7 @@ const Testimonial = () => {
                </Box>
             </Grid>
          </Grid>
-      </Container>
+      </Box>
    );
 };
 
