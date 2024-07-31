@@ -26,6 +26,7 @@ import { useLiked } from 'src/context/LikedContext';
 
 const pages = [
   { name: 'Home', to: '/' },
+  { name: 'Product', to: '/' },
   { name: 'Blog', to: 'post' },
   { name: 'Team', to: 'team' },
   { name: 'Features', to: 'features' },

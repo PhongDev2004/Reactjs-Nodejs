@@ -32,33 +32,6 @@ const Cart = () => {
     }
   };
 
-  // const handleIncrease = async (productId: string | undefined) => {
-  //   try {
-  //     const product = products.find((product) => product?.productId._id === productId);
-  //     if (product) {
-  //       await updateCart(productId, product.quantity + 1);
-  //       setProducts(products.map((product) => (product?.productId._id === productId ? { ...product, quantity: product.quantity + 1 } : product)));
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // const handleDecrease = async (productId: string | undefined) => {
-  //   try {
-  //     const product = products.find((product) => product?.productId._id === productId);
-  //     if (product) {
-  //       await updateCart(productId, product.quantity - 1);
-  //       if (product.quantity === 1) {
-  //         setQuantity((prev) => Number(prev) - 1);
-  //         return handleRemove(productId);
-  //       }
-  //       setProducts(products.map((product) => (product?.productId._id === productId ? { ...product, quantity: product.quantity - 1 } : product)));
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
   const calculateTotalPrice = () => {
     let totalPrice = 0;
     products.forEach((product) => {

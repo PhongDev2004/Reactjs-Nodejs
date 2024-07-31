@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState, ReactNode } from "react";
 import { IProduct } from "src/interfaces/Product";
 import { getLiked } from "src/service/liked";
+import { useUser } from "./UserContext";
 
 interface LikedContextType {
    products: IProduct[];
@@ -11,15 +12,20 @@ const LikedContext = createContext<LikedContextType | undefined>(undefined);
 
 const LikedProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
    const [products, setProducts] = useState<IProduct[]>([]);
+   const { isLoggedIn } = useUser();
 
    useEffect(() => {
-      (async () => {
-         const { data } = await getLiked();
-         if (data) {
-            setProducts(data.favorite.products);
-         }
-      })();
-   }, []);
+      if (isLoggedIn) {
+         (async () => {
+            const { data } = await getLiked();
+            if (data) {
+               setProducts(data.favorite.products);
+            }
+         })();
+      } else {
+         setProducts([]);
+      }
+   }, [isLoggedIn]);
 
    return (
       <LikedContext.Provider value={{ products, setProducts }}>
@@ -34,6 +40,6 @@ const useLiked = () => {
       throw new Error("useLiked must be used within a LikedProvider");
    }
    return context;
-}
+};
 
 export { LikedProvider, useLiked };

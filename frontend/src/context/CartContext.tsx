@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from "react";
 import { ICart } from "src/interfaces/Cart";
 import { getCart } from "src/service/cart";
+import { useUser } from "./UserContext";
 
 interface CartContextType {
   cart: ICart | null;
@@ -16,19 +17,21 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [cart, setCart] = useState<ICart | null>(null);
   const [quantity, setQuantity] = useState<number | string>(0);
+  const { isLoggedIn } = useUser();
 
   useEffect(() => {
-    (async () => {
-      try {
+    if (isLoggedIn) {
+      (async () => {
         const response = await getCart();
+        // setCart(response.data);
         setCart(response.data);
         setQuantity(response.data.result);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
-
+      })();
+    } else {
+      setCart(null);
+      setQuantity(0);
+    }
+  }, [isLoggedIn]);
   return <CartContext.Provider value={{ cart, setCart, quantity, setQuantity }}>{children}</CartContext.Provider>;
 };
 

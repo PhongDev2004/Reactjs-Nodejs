@@ -8,6 +8,9 @@ export type ICart = {
       userId: string;
       __v: number;
       _id: string;
-      products: IProduct[];
-   }
+      products: {
+         productId: IProduct;
+         quantity: number;
+      }[];
+   };
 }
