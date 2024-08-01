@@ -16,6 +16,7 @@ import Blog from './pages/Blog';
 import AccountPage from './pages/AccountPage';
 import Checkout from './pages/Checkout';
 import Homepage from './pages/Homepage';
+import ProductList from './pages/product-list';
 
 function App() {
   return (
@@ -30,13 +31,9 @@ function App() {
           <Route path="/cart" element={<ProtectedRoute element={<CartProduct />} />} />
           <Route path="/checkout" element={<ProtectedRoute element={<Checkout />} />} />
           <Route path="/profile" element={<ProtectedRoute element={<AccountPage />} />} />
+          <Route path="/list" element={<ProtectedRoute element={<ProductList />} />} />
         </Route>
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute requiredRole="admin" element={<LayoutAdmin />} />
-          }
-        >
+        <Route path="/admin" element={<ProtectedRoute requiredRole="admin" element={<LayoutAdmin />} />}>
           <Route index element={<Dashboard />} />
           <Route path="/admin/product-add" element={<ProductAdd />} />
           <Route path="/admin/product-edit/:id" element={<ProductEdit />} />
