@@ -16,8 +16,10 @@ import { useCart } from 'src/context/CartContext';
 import { addToCart } from 'src/service/cart';
 import toast from 'react-hot-toast';
 import { addToFavorite } from 'src/service/liked';
+import { useLiked } from 'src/context/LikedContext';
 const Homepage = () => {
   const [products, setProducts] = React.useState<IProduct[]>([]);
+  const { setProducts: setProductsFav } = useLiked();
   const { isLoading, setLoading } = useLoading();
   const { error, setError, clearError } = useFlashError();
   const { setQuantity } = useCart();
@@ -51,6 +53,7 @@ const Homepage = () => {
     e.preventDefault();
     e.stopPropagation();
     const response = await addToFavorite(productId);
+    setProductsFav(response.data.favorite.products);
 
     if (response.status === 'success') {
       toast.success('Add to favorite successfully!');

@@ -25,7 +25,7 @@ const LikedProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       } else {
          setProducts([]);
       }
-   }, [isLoggedIn]);
+   }, [isLoggedIn, products]);
 
    return (
       <LikedContext.Provider value={{ products, setProducts }}>

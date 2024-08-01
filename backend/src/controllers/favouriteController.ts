@@ -13,14 +13,17 @@ export const addProductToFavorite = catchAsync(async (req, res, next) => {
     const productExists = favorite.products.some((id) => id.toString() === productId.toString());
 
     if (productExists) {
-      return res.status(400).json({
-        status: 'fail',
-        message: 'Product already exists in favorites',
+      return res.status(200).json({
+        status: 'success',
+        // message: 'Product already exists in favorites',
+        data: {
+          favorite,
+        }
       });
+    } else {
+      favorite.products.push(productId);
+      await favorite.save();
     }
-
-    favorite.products.push(productId);
-    await favorite.save();
   }
 
   res.status(200).json({
