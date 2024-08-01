@@ -17,6 +17,7 @@ import AccountPage from './pages/AccountPage';
 import Checkout from './pages/Checkout';
 import Homepage from './pages/Homepage';
 import ProductList from './pages/product-list';
+import TeamPage from './pages/Team';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/checkout" element={<ProtectedRoute element={<Checkout />} />} />
           <Route path="/profile" element={<ProtectedRoute element={<AccountPage />} />} />
           <Route path="/list" element={<ProtectedRoute element={<ProductList />} />} />
+          <Route path="/team" element={<ProtectedRoute element={<TeamPage />} />} />
         </Route>
         <Route path="/admin" element={<ProtectedRoute requiredRole="admin" element={<LayoutAdmin />} />}>
           <Route index element={<Dashboard />} />
