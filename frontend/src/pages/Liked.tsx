@@ -12,6 +12,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { addToCart } from 'src/service/cart';
 import { useCart } from 'src/context/CartContext';
 import { useLiked } from 'src/context/LikedContext';
+import { IProduct } from 'src/interfaces/Product';
 
 export interface LikedDialogProps {
    open: boolean;
@@ -46,12 +47,14 @@ export default function LikedDialog({ open, handleClose }: LikedDialogProps) {
                Liked
             </Typography>
             <DialogContent>
-               {products.map((product: any) => (
+               {products.map((product: IProduct) => (
                   <Box display="flex" justifyContent="space-between" alignItems="center" key={product._id} mb={1}>
                      <Box display="flex" alignItems="center">
                         <img width={100} src={product.image} alt={product.name} />
                         <Box ml={1}>
-                           <Typography fontWeight={700}>{product.name.length > 20 ? product.name.substring(0, 20) + '...' : product.name}</Typography>
+                           <Typography fontWeight={700}>
+                              {product.name && product.name.length > 20 ? product.name.substring(0, 20) + '...' : product.name}
+                           </Typography>
                            <Typography fontWeight={700} color="red">
                               {product.price}
                            </Typography>
