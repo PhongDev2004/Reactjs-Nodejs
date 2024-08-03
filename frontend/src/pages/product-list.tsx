@@ -16,6 +16,7 @@ import FeatureIcons from 'src/components/Features';
 import ProductCard from 'src/components/ProductCart';
 import Banner from 'src/components/Banner';
 import HeaderPage from 'src/components/HeaderPage';
+import Testimonial from 'src/components/Testimonial';
 
 type Props = {};
 
@@ -155,7 +156,7 @@ const ProductList = (props: Props) => {
       <Box display="flex" justifyContent="center" mt={4}>
         <Pagination count={Math.ceil(products.length / showCount)} page={currentPage} onChange={handlePageChange} color="primary" />
       </Box>
-      <FeatureIcons />
+      <Testimonial />
     </>
   );
 };
