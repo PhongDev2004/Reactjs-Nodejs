@@ -39,26 +39,37 @@ const Cart = () => {
     });
     return totalPrice;
   };
+
   return (
     <>
-      <HeaderPage page='Cart' />
-      <Container maxWidth='lg' sx={{ my: 5 }}>
+      <HeaderPage page="Cart" />
+      <Container maxWidth="lg" sx={{ my: 5 }}>
         <Grid container spacing={2}>
-          <Grid item xs={8}>
+          <Grid item xs={12} md={8}>
             <TableContainer component={Paper}>
-              <Table sx={{
-                [`& .${tableCellClasses.root}`]: {
-                  borderBottom: "none"
-                },
-              }}>
+              <Table
+                sx={{
+                  [`& .${tableCellClasses.root}`]: {
+                    borderBottom: 'none',
+                  },
+                }}
+              >
                 {/* Head */}
                 <TableHead sx={{ backgroundColor: '#F9F1E7' }}>
                   <TableRow>
                     <TableCell></TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }} align="left">Product</TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }} align="left">Price</TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }} align="left">Quantity</TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }} align="left">Subtotal</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }} align="left">
+                      Product
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }} align="left">
+                      Price
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }} align="left">
+                      Quantity
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }} align="left">
+                      Subtotal
+                    </TableCell>
                     <TableCell align="left"></TableCell>
                   </TableRow>
                 </TableHead>

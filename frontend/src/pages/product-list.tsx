@@ -134,7 +134,7 @@ const ProductList = (props: Props) => {
             </Typography>
             <FormControl variant="outlined" size="small" fullWidth>
               <InputLabel>Sort By</InputLabel>
-              <Select value={sortBy} onChange={handleSortChange} displayEmpty label="Sort By">
+              <Select value={sortBy} displayEmpty label="Sort By">
                 <MenuItem value="Default">Default</MenuItem>
                 <MenuItem value="PriceAsc">Price: Low to High</MenuItem>
                 <MenuItem value="PriceDesc">Price: High to Low</MenuItem>
