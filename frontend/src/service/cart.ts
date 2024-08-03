@@ -1,3 +1,4 @@
+import { useCart } from 'src/context/CartContext';
 import instance from './api';
 
 
@@ -42,3 +43,19 @@ export const updateCart = async (productId: string | undefined, quantity: number
     console.log(error);
   }
 };
+
+export const clearCart = async () => {
+  try {
+    const { setCart } = useCart();
+    const { data } = await instance.delete('/cart');
+    setCart(cart => {
+      if (cart) {
+        return { ...cart, products: [], result: 0 };
+      }
+      return cart;
+    });
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}

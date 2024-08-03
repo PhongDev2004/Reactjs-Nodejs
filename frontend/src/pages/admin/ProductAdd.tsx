@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { handleAddProduct } from 'src/service/product';
 import { IProduct } from 'src/interfaces/Product';
 import { Box, Button, TextField, Typography, Paper, Grid } from '@mui/material';
+import { useState } from 'react';
 
 const schemaProduct = Joi.object({
   name: Joi.string().required().min(3).max(100),
@@ -15,6 +16,43 @@ const schemaProduct = Joi.object({
   brand: Joi.string(),
   image: Joi.any().optional(),
 });
+
+// const [file, setFile] = useState<File | null>(null);
+
+const getFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const files = e.target.files;
+  if (files && files[0]) {
+    const file = files[0];
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      const imageDisplay = document.getElementById('imageDisplay') as HTMLImageElement;
+      const deleteButton = document.getElementById('deleteButton');
+      if (imageDisplay && event.target) {
+        imageDisplay.src = event.target.result as string;
+        imageDisplay.style.display = 'block';
+      }
+      if (deleteButton) {
+        deleteButton.style.display = 'block';
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function deleteImage(e: React.MouseEvent<HTMLButtonElement>) {
+  const imageDisplay = document.getElementById('imageDisplay') as HTMLImageElement;
+  const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+  if (imageDisplay) {
+    imageDisplay.src = '';
+    imageDisplay.style.display = 'none';
+  }
+  if (e.target) {
+    (e.target as HTMLButtonElement).style.display = 'none';
+  }
+  if (fileInput) {
+    fileInput.value = '';
+  }
+};
 
 const ProductAdd = () => {
   const navigate = useNavigate();
@@ -77,7 +115,13 @@ const ProductAdd = () => {
           </Grid>
           <Grid item xs={12}>
             <Typography variant="subtitle1">Cover photo</Typography>
-            <input type="file" {...register('image')} />
+            <input
+              type="file"
+              id='fileInput'
+              {...register('image', { onChange: (e) => getFile(e) })}
+            />
+            <img width={100} src="" id='imageDisplay' alt="" />
+            <Button onClick={(e) => deleteImage(e)} sx={{ display: 'none' }} type='button' id='deleteButton'>Delete</Button>
             {errors.image && (
               <Typography variant="caption" color="error">
                 {errors.image.message}

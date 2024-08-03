@@ -32,6 +32,8 @@ const Cart = () => {
     }
   };
 
+
+
   const calculateTotalPrice = () => {
     let totalPrice = 0;
     products.forEach((product) => {
@@ -76,7 +78,7 @@ const Cart = () => {
                       <TableCell sx={{ color: '#9F9F9F' }} align="left">Rs. {product.productId.price}</TableCell>
                       <TableCell align="left">
                         <Input
-                          value={1}
+                          value={product.quantity}
                           readOnly
                           sx={{
                             textAlign: 'center',
@@ -89,7 +91,7 @@ const Cart = () => {
                         />
                       </TableCell>
                       <TableCell align="left">Rs. {product.productId.price * product.quantity}</TableCell>
-                      <TableCell align="left"><DeleteIcon onClick={() => handleRemove(product.productId._id)} fontSize='small' sx={{ color: '#B88E2F' }} /></TableCell>
+                      <TableCell align="left"><DeleteIcon onClick={() => handleRemove(product.productId._id)} fontSize='small' sx={{ color: '#B88E2F', cursor: 'pointer' }} /></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

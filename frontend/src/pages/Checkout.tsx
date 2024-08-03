@@ -18,6 +18,8 @@ import Joi from 'joi';
 import HeaderPage from 'src/components/HeaderPage';
 import Testimonial from 'src/components/Testimonial';
 import { useCart } from 'src/context/CartContext';
+import { useUser } from 'src/context/UserContext';
+import { createOrder } from 'src/service/order';
 
 const schema = Joi.object({
    firstName: Joi.string().required().messages({
@@ -81,8 +83,8 @@ const Checkout = () => {
 
    const [city, setCity] = React.useState('');
    const [country, setCountry] = React.useState('');
-   const { cart, setCart, setQuantity } = useCart();
-   console.log(cart?.cart.products);
+   const { cart } = useCart();
+   const { user } = useUser();
 
    const setValue = (field: string, value: string, options: any) => {
       if (field === 'city') {
@@ -92,10 +94,23 @@ const Checkout = () => {
       }
    }
 
-   const onSubmit = (data: FormData) => {
-      console.log('Form Data:', data);
-      // Handle form submission
-   };
+   const onSubmit = async (data: FormData) => {
+      const orderInfo = {
+         orderItems: cart?.cart.products.map((product) => ({
+            product: product.productId.name,
+            quantity: product.quantity,
+            price: product.productId.price,
+         })),
+         deliveryDetails: {
+            ...data,
+         },
+         userId: user?._id,
+      };
+      console.log(orderInfo);
+
+      const response = await createOrder(orderInfo);
+      window.location.href = response.data.url;
+   }
 
    return (
       <>
@@ -252,16 +267,16 @@ const Checkout = () => {
                      <p key={index} className="w-full flex text-[#9F9F9F]">
                         {product.productId.name.length > 20 ? product.productId.name.slice(0, 20) + '...' : product.productId.name
                         }{" "} x {product.quantity}{' '}
-                        <span className="ms-auto">Rs. {product.productId.price}</span>
+                        <span className="ms-auto">$ {product.productId.price}</span>
                      </p>
                   ))}
                   <p className="w-full font-semibold my-5 flex">
-                     Subtotal <span className="ms-auto">Rs. {
+                     Subtotal <span className="ms-auto">$ {
                         cart?.cart.products.reduce((acc, product) => acc + product.productId.price * product.quantity, 0)
                      }</span>
                   </p>
                   <p className="w-full font-semibold flex">
-                     Total <span className="ms-auto font-bold text-2xl text-[#B88E2F]">Rs. {cart?.cart.products.reduce((acc, product) => acc + product.productId.price * product.quantity, 0)}</span>
+                     Total <span className="ms-auto font-bold text-2xl text-[#B88E2F]">$ {cart?.cart.products.reduce((acc, product) => acc + product.productId.price * product.quantity, 0)}</span>
                   </p>
                   <Divider sx={{ my: 3 }} />
                   <ul className="list-disc ps-5 font-semibold text-lg">

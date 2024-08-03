@@ -40,7 +40,7 @@ app.use('/api/products', productRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/users', userRouter);
 app.use('/api/favorites', favoriteRouter);
-app.use('/api/orders', orderRouter);
+app.use('/api/checkout', orderRouter);
 
 app.use(
   (err: ApiError, req: express.Request, res: express.Response, next: express.NextFunction) => {

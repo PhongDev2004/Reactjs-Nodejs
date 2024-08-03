@@ -1,84 +1,93 @@
 import { Request, Response, NextFunction } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import Order from '../models/Order';
+import Stripe from 'stripe';
+import { FRONTEND_URL, STRIPE_API_KEY } from '../Utils/env';
 import catchAsync from '../Utils/catchAsync';
-import ApiError from '../Utils/ApiError';
 
-export const createOrder = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const { orderItems, totalAmount, shippingAddress } = req.body;
+const STRIPE = new Stripe(STRIPE_API_KEY as string)
+const FRONTE_URL = FRONTEND_URL as string;
 
-  if (!orderItems || orderItems.length === 0) {
-    return next(new ApiError(StatusCodes.BAD_REQUEST, 'No order items provided'));
-  }
+type CheckoutSessionRequest = {
+  orderItems: {
+    product: string;
+    quantity: number;
+    price: number;
+  }[];
+  deliveryDetails: {
+    firstName: string;
+    lastName: string;
+    companyName?: string;
+    country?: string;
+    streetAddress: string;
+    city: string;
+    province: string;
+    phone: string;
+    emailAddress: string;
+    additionalInfo?: string;
+    zipCode: string;
+  },
+  userId: string;
+}
 
-  const order = await Order.create({
-    user: req.user._id,
-    orderItems,
-    totalAmount,
-    shippingAddress,
-  });
+export const createCheckoutSession = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const checkoutSessionRequest = req.body as CheckoutSessionRequest;
 
-  res.status(StatusCodes.CREATED).json({
-    status: 'success',
-    data: {
-      order,
+  const session = await STRIPE.checkout.sessions.create({
+    payment_method_types: ['card'],
+    line_items: checkoutSessionRequest.orderItems.map((item) => ({
+      price_data: {
+        currency: 'vnd',
+        product_data: {
+          name: item.product,
+        },
+        unit_amount: item.price * 100,
+      },
+      quantity: item.quantity,
+    })),
+    customer_email: checkoutSessionRequest.deliveryDetails.emailAddress,
+    mode: 'payment',
+    success_url: `${FRONTE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${FRONTE_URL}/checkout`,
+    metadata: {
+      phone: checkoutSessionRequest.deliveryDetails.phone,
+      name: `${checkoutSessionRequest.deliveryDetails.firstName} ${checkoutSessionRequest.deliveryDetails.lastName}`,
     },
+    shipping_address_collection: {
+      allowed_countries: ['VN'],
+    }
   });
-});
-
-export const getAllOrders = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const orders = await Order.find().populate('orderItems.product').exec();
-
-  if (!orders) {
-    return next(new ApiError(404, 'No orders found'));
-  }
 
   res.status(200).json({
     status: 'success',
     data: {
-      orders,
+      url: session.url,
     },
   });
-});
+})
 
 export const getOrderById = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const order = await Order.findById(req.params.id).populate('orderItems.product');
+  const result = await Promise.all([
+    STRIPE.checkout.sessions.retrieve(req.params.id, {
+      expand: ['payment_intent.payment_method'],
+    }),
+    STRIPE.checkout.sessions.listLineItems(req.params.id),
+  ]);
 
-  if (!order) {
-    return next(new ApiError(StatusCodes.NOT_FOUND, 'Order not found'));
-  }
+  res.status(200).json({
+    status: 'success',
+    data: {
+      session: result[0],
+      lineItems: result[1],
+    },
+  });
+})
 
-  res.status(StatusCodes.OK).json({
+export const createOrder = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const order = req.body;
+
+  res.status(201).json({
     status: 'success',
     data: {
       order,
     },
   });
-});
-
-export const updateOrderStatus = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { status } = req.body;
-
-    if (!['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].includes(status)) {
-      return next(new ApiError(StatusCodes.BAD_REQUEST, 'Invalid status'));
-    }
-
-    const order = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true, runValidators: true }
-    );
-
-    if (!order) {
-      return next(new ApiError(StatusCodes.NOT_FOUND, 'Order not found'));
-    }
-
-    res.status(StatusCodes.OK).json({
-      status: 'success',
-      data: {
-        order,
-      },
-    });
-  }
-);
+})

@@ -142,3 +142,21 @@ export const updateQuantity = catchAsync(
     });
   }
 );
+
+export const removeAllItemsFromCart = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.user._id;
+
+  Cart.deleteMany({ userId }, (err: any) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'fail',
+        message: 'Internal server error',
+      });
+    }
+
+    return res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  });
+});

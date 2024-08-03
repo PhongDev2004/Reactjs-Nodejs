@@ -1,16 +1,11 @@
 import express from 'express';
-import {
-  createOrder,
-  getAllOrders,
-  getOrderById,
-  updateOrderStatus,
-} from '../controllers/orderController';
 import { protect } from '../middlewares/auth';
+import { createCheckoutSession, createOrder, getOrderById } from '../controllers/orderController';
 
 const router = express.Router();
 
-router.route('/').get(protect, getAllOrders).post(protect, createOrder);
-
-router.route('/:id').get(protect, getOrderById).patch(protect, updateOrderStatus);
+router.post("/create-checkout-session", protect, createCheckoutSession)
+router.post("/createOrder", protect, createOrder)
+router.get("/getOrder/:id", protect, getOrderById)
 
 export default router;
