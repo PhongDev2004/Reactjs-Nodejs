@@ -15,20 +15,27 @@ const Banner = () => {
 
   return (
     <Box sx={{ background: `url(${background})`, width: '100%', height: `${bgHeight}px` }}>
-      <Container maxWidth='lg' sx={{ position: 'relative', height: '100%' }}>
-        <Box sx={{
-          width: '50%', height: '60%', backgroundColor: '#FFF3E3', position: 'absolute',
-          top: '50%',
-          right: '0',
-          transform: 'translate(0, -50%)',
-          padding: '3rem',
-          display: 'flex',
-          flexDirection: 'column',
-        }}>
+      <Container maxWidth="lg" sx={{ position: 'relative', height: '100%' }}>
+        <Box
+          sx={{
+            width: { xs: '90%', sm: '70%', md: '50%' },
+            height: 'auto',
+            backgroundColor: '#FFF3E3',
+            position: 'absolute',
+            top: '50%',
+            right: { xs: '50%', md: '0' },
+            transform: { xs: 'translate(50%, -50%)', md: 'translate(0, -50%)' },
+            padding: { xs: '2rem', md: '3rem' },
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
           <Typography sx={{ letterSpacing: 3, fontWeight: 600, fontSize: '16px' }}>New Arrival</Typography>
-          <Typography variant='h3' sx={{ lineHeight: '65px', fontWeight: 700, fontSize: '52px', color: '#B88E2F' }}>Discover Our New Collection</Typography>
-          <Typography sx={{ fontSize: '18px', my: 1 }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis.</Typography>
-          <Button sx={{ textTransform: 'uppercase', color: '#fff', backgroundColor: '#B88E2F', borderRadius: 0, px: 5, py: 2, width: 'fit-content', mt: 'auto' }}>Buy now</Button>
+          <Typography variant="h3" sx={{ lineHeight: { xs: '40px', md: '65px' }, fontWeight: 700, fontSize: { xs: '32px', md: '52px' }, color: '#B88E2F' }}>
+            Discover Our New Collection
+          </Typography>
+          <Typography sx={{ fontSize: { xs: '14px', md: '18px' }, my: 1 }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis.</Typography>
+          <Button sx={{ textTransform: 'uppercase', color: '#fff', backgroundColor: '#B88E2F', borderRadius: 0, px: { xs: 3, md: 5 }, py: { xs: 1, md: 2 }, width: 'fit-content', mt: 'auto' }}>Buy now</Button>
         </Box>
       </Container>
     </Box>
@@ -36,4 +43,3 @@ const Banner = () => {
 };
 
 export default Banner;
-

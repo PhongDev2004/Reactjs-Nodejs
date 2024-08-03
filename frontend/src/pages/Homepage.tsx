@@ -58,7 +58,7 @@ const Homepage = () => {
     if (response.status === 'success') {
       toast.success('Add to favorite successfully!');
     }
-  }
+  };
 
   return (
     <>
@@ -80,29 +80,40 @@ const Homepage = () => {
             <Loading isShow={isLoading} />
 
             {/* Category */}
-            <Typography variant='h4' fontWeight='bold' textAlign='center'>Browse The Range</Typography>
-            <Typography color='#666666' mb={5} variant='body1' fontWeight='medium' textAlign='center'>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Typography>
+            <Typography variant="h4" fontWeight="bold" textAlign="center">
+              Browse The Range
+            </Typography>
+            <Typography color="#666666" mb={5} variant="body1" fontWeight="medium" textAlign="center">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </Typography>
             <Grid container spacing={3}>
               <Grid item xs={4}>
                 <img src="./src/assets/diningroom.png" alt="" />
-                <Typography variant='body1' textAlign='center' fontWeight='bold' my={2} fontSize={18}>Dining</Typography>
+                <Typography variant="body1" textAlign="center" fontWeight="bold" my={2} fontSize={18}>
+                  Dining
+                </Typography>
               </Grid>
               <Grid item xs={4}>
                 <img src="./src/assets/livingroom.png" alt="" />
-                <Typography variant='body1' textAlign='center' fontWeight='bold' my={2} fontSize={18}>Living</Typography>
+                <Typography variant="body1" textAlign="center" fontWeight="bold" my={2} fontSize={18}>
+                  Living
+                </Typography>
               </Grid>
               <Grid item xs={4}>
                 <img src="./src/assets/bedroom.png" alt="" />
-                <Typography variant='body1' textAlign='center' fontWeight='bold' my={2} fontSize={18}>Bedroom</Typography>
+                <Typography variant="body1" textAlign="center" fontWeight="bold" my={2} fontSize={18}>
+                  Bedroom
+                </Typography>
               </Grid>
             </Grid>
 
             {/* Products */}
-            <Typography variant='h4' my={4} fontWeight='bold' textAlign='center'>Our Products</Typography>
-            <Grid container spacing={4}>
-
+            <Typography variant="h4" my={4} fontWeight="bold" textAlign="center">
+              Our Products
+            </Typography>
+            <Grid container spacing={4} justifyContent="center">
               {products.slice(0, 8).map((product) => (
-                <Grid item xs={3} key={product._id}>
+                <Grid item xs={12} sm={6} md={4} lg={3} key={product._id} display="flex" justifyContent="center">
                   <ProductCard handleAddToCart={handleAddToCart} product={product} handleAddToFav={handleAddToFav} />
                 </Grid>
               ))}

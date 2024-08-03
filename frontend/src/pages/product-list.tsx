@@ -99,52 +99,55 @@ const ProductList = (props: Props) => {
   return (
     <>
       <HeaderPage page="List" />
-      <Box display="flex" justifyContent="space-between" alignItems="center" p={2} bgcolor="#FAF3EA">
-        <Box display="flex" alignItems="center">
-          <IconButton>
-            <FilterListIcon />
-            <Typography variant="body2">Filter</Typography>
-          </IconButton>
 
-          <IconButton>
-            <GridViewIcon />
-          </IconButton>
-          <IconButton>
-            <ViewListIcon />
-          </IconButton>
-          <Typography variant="body2" ml={2}>
-            Showing {(currentPage - 1) * showCount + 1}-{Math.min(currentPage * showCount, products.length)} of {products.length} results
-          </Typography>
-        </Box>
-        <Box display="flex" alignItems="center">
-          <Typography variant="body2" mr={2}>
-            Show
-          </Typography>
-          <Select value={showCount} onChange={(e) => setShowCount(Number(e.target.value))} displayEmpty variant="outlined" size="small">
-            <MenuItem value={4}>4</MenuItem>
-            <MenuItem value={8}>8</MenuItem>
-            <MenuItem value={16}>16</MenuItem>
-            <MenuItem value={32}>32</MenuItem>
-            <MenuItem value={48}>48</MenuItem>
-          </Select>
-          <Typography variant="body2" ml={2} mr={2}>
-            Sort by
-          </Typography>
-          <FormControl variant="outlined" size="small" fullWidth>
-            <InputLabel>Sort By</InputLabel>
-            <Select value={sortBy} onChange={handleSortChange} displayEmpty label="Sort By">
-              <MenuItem value="Default">Default</MenuItem>
-              <MenuItem value="PriceAsc">Price: Low to High</MenuItem>
-              <MenuItem value="PriceDesc">Price: High to Low</MenuItem>
-              <MenuItem value="NameAsc">Name: A to Z</MenuItem>
-              <MenuItem value="NameDesc">Name: Z to A</MenuItem>
+      <Box bgcolor="#FAF3EA" p={2}>
+        <Grid container spacing={2} alignItems="center" display="flex" justifyContent="space-between">
+          <Grid item xs={12} sm={6} md={4} display="flex" alignItems="center" justifyContent={{ xs: 'center', lg: 'flex-start' }}>
+            <IconButton>
+              <FilterListIcon />
+              <Typography variant="body2">Filter</Typography>
+            </IconButton>
+            <IconButton>
+              <GridViewIcon />
+            </IconButton>
+            <IconButton>
+              <ViewListIcon />
+            </IconButton>
+            <Typography variant="body2">
+              Showing {(currentPage - 1) * showCount + 1}-{Math.min(currentPage * showCount, products.length)} of {products.length} results
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={4} display="flex" justifyContent={{ xs: 'center', sm: 'flex-end' }} alignItems="center">
+            <Typography variant="body2" mr={2}>
+              Show
+            </Typography>
+            <Select value={showCount} onChange={(e) => setShowCount(Number(e.target.value))} displayEmpty variant="outlined" size="small">
+              <MenuItem value={4}>4</MenuItem>
+              <MenuItem value={8}>8</MenuItem>
+              <MenuItem value={16}>16</MenuItem>
+              <MenuItem value={32}>32</MenuItem>
+              <MenuItem value={48}>48</MenuItem>
             </Select>
-          </FormControl>
-        </Box>
+            <Typography variant="body2" ml={2} mr={2}>
+              Sort by
+            </Typography>
+            <FormControl variant="outlined" size="small">
+              <InputLabel>Sort By</InputLabel>
+              <Select value={sortBy} onChange={handleSortChange} displayEmpty label="Sort By">
+                <MenuItem value="Default">Default</MenuItem>
+                <MenuItem value="PriceAsc">Price: Low to High</MenuItem>
+                <MenuItem value="PriceDesc">Price: High to Low</MenuItem>
+                <MenuItem value="NameAsc">Name: A to Z</MenuItem>
+                <MenuItem value="NameDesc">Name: Z to A</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
       </Box>
       <Grid container spacing={4}>
         {displayedProducts.map((product) => (
-          <Grid item xs={3} key={product._id}>
+          <Grid item xs={12} sm={6} md={4} lg={3} key={product._id} display="flex" justifyContent="center">
             <ProductCard handleAddToCart={handleAddToCart} product={product} handleAddToFav={handleAddToFav} />
           </Grid>
         ))}
