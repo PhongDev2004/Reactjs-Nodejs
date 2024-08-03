@@ -267,16 +267,16 @@ const Checkout = () => {
                      <p key={index} className="w-full flex text-[#9F9F9F]">
                         {product.productId.name.length > 20 ? product.productId.name.slice(0, 20) + '...' : product.productId.name
                         }{" "} x {product.quantity}{' '}
-                        <span className="ms-auto">$ {product.productId.price}</span>
+                        <span className="ms-auto">{product.productId.price * product.quantity * 100} <small>đ</small></span>
                      </p>
                   ))}
                   <p className="w-full font-semibold my-5 flex">
-                     Subtotal <span className="ms-auto">$ {
-                        cart?.cart.products.reduce((acc, product) => acc + product.productId.price * product.quantity, 0)
-                     }</span>
+                     Subtotal <span className="ms-auto">{
+                        cart?.cart.products.reduce((acc, product) => acc + product.productId.price * product.quantity * 100, 0)
+                     } <small>đ</small></span>
                   </p>
                   <p className="w-full font-semibold flex">
-                     Total <span className="ms-auto font-bold text-2xl text-[#B88E2F]">$ {cart?.cart.products.reduce((acc, product) => acc + product.productId.price * product.quantity, 0)}</span>
+                     Total <span className="ms-auto font-bold text-2xl text-[#B88E2F]"> {cart?.cart.products.reduce((acc, product) => acc + product.productId.price * product.quantity * 100, 0)} <small>đ</small></span>
                   </p>
                   <Divider sx={{ my: 3 }} />
                   <ul className="list-disc ps-5 font-semibold text-lg">

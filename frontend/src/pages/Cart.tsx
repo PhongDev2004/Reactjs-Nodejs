@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ProductCart } from 'src/interfaces/ProductCart';
-import { getCart, removeFromCart, updateCart } from 'src/service/cart';
+import { getCart, removeFromCart } from 'src/service/cart';
 import { Box, Button, Container, Grid, Input, Paper, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useCart } from 'src/context/CartContext';
 import HeaderPage from '../components/HeaderPage';
@@ -32,12 +32,10 @@ const Cart = () => {
     }
   };
 
-
-
   const calculateTotalPrice = () => {
     let totalPrice = 0;
     products.forEach((product) => {
-      totalPrice += product.productId.price * product.quantity;
+      totalPrice += product.productId.price * product.quantity * 100;
     });
     return totalPrice;
   };
@@ -75,7 +73,7 @@ const Cart = () => {
                       <TableCell sx={{ color: '#9F9F9F' }} align="left">
                         {product.productId.name.length > 20 ? product.productId.name.slice(0, 20) + '...' : product.productId.name}
                       </TableCell>
-                      <TableCell sx={{ color: '#9F9F9F' }} align="left">Rs. {product.productId.price}</TableCell>
+                      <TableCell sx={{ color: '#9F9F9F' }} align="left">{product.productId.price}vnd</TableCell>
                       <TableCell align="left">
                         <Input
                           value={product.quantity}
@@ -101,8 +99,8 @@ const Cart = () => {
           <Grid item xs={4}>
             <Box sx={{ backgroundColor: '#F9F1E7', display: 'flex', flexDirection: 'column', alignItems: 'center', px: 10 }}>
               <Typography variant='h5' mb={5} py={2} fontWeight={700}>Cart Total</Typography>
-              <Typography variant='body1' display='flex' width='100%' fontWeight={600}>Subtotal: <Typography ml='auto' component='span' color='#9F9F9F'>Rs. {calculateTotalPrice()}</Typography></Typography>
-              <Typography variant='body1' display='flex' alignItems='center' my={4} width='100%' fontWeight={600}>Total: <Typography ml='auto' component='span' fontWeight={700} variant='h6' color='#B88E2F'>Rs. {calculateTotalPrice()}</Typography></Typography>
+              <Typography variant='body1' display='flex' width='100%' fontWeight={600}>Subtotal: <Typography ml='auto' component='span' color='#9F9F9F'>$ {calculateTotalPrice()}</Typography></Typography>
+              <Typography variant='body1' display='flex' alignItems='center' my={4} width='100%' fontWeight={600}>Total: <Typography ml='auto' component='span' fontWeight={700} variant='h6' color='#B88E2F'>$ {calculateTotalPrice()}</Typography></Typography>
               <Link to='/checkout'>
                 <Button variant='outlined' color="inherit" sx={{ color: '#000', transform: 'initial', mb: 8 }}>Check Out</Button>
               </Link>
